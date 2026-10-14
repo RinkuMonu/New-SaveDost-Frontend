@@ -1,8 +1,9 @@
-# Reference & Old Project Folders
-old save dost frontend/
+# Reference & Old Project Folders (Strictly Read-Only, Never Committed)
 old save dost*/
 *refrence*
 *reference*
+old save dost frontend/
+/old save dost frontend/
 
 # Dependencies
 node_modules/
@@ -22,6 +23,7 @@ out/
 .env.test.local
 .env.production.local
 *.env
+!.env.example
 
 # Logs
 npm-debug.log*
