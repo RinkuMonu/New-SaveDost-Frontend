@@ -3,18 +3,16 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom
 import { useAuth } from "../providers/AuthContext";
 import ProtectedRoute from "./ProtectedRoute";
 import { LoginPage, RegisterPage, UnauthorizedPage } from "../../features/auth";
-import { AdminDashboardPlaceholder } from "../../features/admin";
-import { ApiPartnerDashboardPlaceholder } from "../../features/api-partner";
+import { AdminDashboardPlaceholder, UserListPage } from "../../features/admin";
+import { ApiPartnerDashboardPlaceholder, PartnerWalletPage } from "../../features/api-partner";
 import { UserDashboardPlaceholder } from "../../features/user";
 import { AppLayout, FeaturePlaceholderPage } from "../../components/layout";
 import { ROLES, getRoleDashboardPath } from "../../utils/constants";
 import { Loader } from "../../components/common";
 import {
-  Users,
   Server,
   FileText,
   Settings,
-  Wallet,
   Code,
   Activity,
   Smartphone,
@@ -97,17 +95,7 @@ export const AppRouter = () => {
             }
           >
             <Route path="/admin/dashboard" element={<AdminDashboardPlaceholder />} />
-            <Route
-              path="/admin/users"
-              element={
-                <FeaturePlaceholderPage
-                  title="User Management"
-                  description="Manage platform consumers and API partners, verify accounts, and update permission status."
-                  plannedPhase="Phase 5 User Management"
-                  icon={Users}
-                />
-              }
-            />
+            <Route path="/admin/users" element={<UserListPage />} />
             <Route
               path="/admin/services"
               element={
@@ -170,18 +158,7 @@ export const AppRouter = () => {
             }
           >
             <Route path="/api-partner/dashboard" element={<ApiPartnerDashboardPlaceholder />} />
-            <Route
-              path="/api-partner/wallet"
-              element={
-                <FeaturePlaceholderPage
-                  title="B2B Partner Wallet"
-                  description="Dedicated partner wallet interface for prefunding and high-frequency automated API debits. Consumer wallet features remain prohibited."
-                  plannedPhase="Phase 5 Dedicated Wallet"
-                  badgeText="B2B Wallet"
-                  icon={Wallet}
-                />
-              }
-            />
+            <Route path="/api-partner/wallet" element={<PartnerWalletPage />} />
             <Route
               path="/api-partner/docs"
               element={
