@@ -20,7 +20,6 @@ const apiClient = axios.create({
     "Content-Type": "application/json",
     Accept: "application/json",
   },
-  withCredentials: true, // Enables cookie handling alongside Bearer token
 });
 
 // Request Interceptor: Attach Bearer token

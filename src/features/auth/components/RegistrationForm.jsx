@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Mail, Eye, EyeOff, Lock, User as UserIcon } from "lucide-react";
 import Swal from "sweetalert2";
 import apiClient from "../../../services/apiClient";
-import { ROLES } from "../../../utils/constants";
+import { ROLES, TOKEN_STORAGE_KEY } from "../../../utils/constants";
 
 export const RegistrationForm = ({
   register,
@@ -112,7 +112,7 @@ export const RegistrationForm = ({
         const userId = response?.data?.newUser?._id || response?.data?.user?._id;
         const token = response?.data?.token;
         if (token) {
-          localStorage.setItem("savedost_auth_token", token);
+          localStorage.setItem(TOKEN_STORAGE_KEY, token);
         }
         if (setUserId) setUserId(userId);
 
