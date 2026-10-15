@@ -1,366 +1,606 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Phone, Lock, KeyRound, Eye, EyeOff, ShieldCheck, AlertCircle, CheckCircle2 } from "lucide-react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Phone, Shield, Lock, Key, CheckCircle, Eye, EyeOff } from "lucide-react";
+import Swal from "sweetalert2";
 import { useAuth } from "../../../app/providers/AuthContext";
-import authService from "../services/authService";
-import { Button, Input, Card } from "../../../components/common";
+import apiClient from "../../../services/apiClient";
 import { getRoleDashboardPath } from "../../../utils/constants";
-import { getErrorMessage } from "../../../utils/apiError";
+import SideIframeVideo from "../components/SideIframeVideo";
+import TermsModal from "../components/TermsModal";
+import PrivacyPolicyModal from "../components/PrivacyPolicyModal";
+import "../login.css";
 
+/**
+ * SaveDost Login Page
+ * Preserves the exact UI, styling, colors, Finunique logo, and floating cards from the reference project.
+ */
 export const LoginPage = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { login, isAuthenticated, role } = useAuth();
-
-  // If already authenticated, redirect to role dashboard
-  useEffect(() => {
-    if (isAuthenticated && role) {
-      const from = location.state?.from?.pathname || getRoleDashboardPath(role);
-      navigate(from, { replace: true });
-    }
-  }, [isAuthenticated, role, navigate, location]);
-
-  // Form State
-  const [loginMode, setLoginMode] = useState("password"); // "password" | "otp"
-  const [mobile, setMobile] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    mobileNumber: "",
+    password: "",
+  });
   const [otp, setOtp] = useState("");
+  const [showOtpField, setShowOtpField] = useState(false);
+  const [showOtp, setShowOtp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [isTermsAccepted, setIsTermsAccepted] = useState(true);
+  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+  const [loadingPass, setLoadingPass] = useState(false);
+  const [loadingOtp, setLoadingOtp] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
+  const [youtube, setYoutube] = useState(false);
 
-  // OTP flow state
-  const [otpSent, setOtpSent] = useState(false);
-  const [sendingOtp, setSendingOtp] = useState(false);
-  const [otpTimer, setOtpTimer] = useState(0);
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-  // Status and feedback
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-
-  // Countdown timer for OTP resend
-  useEffect(() => {
-    let interval = null;
-    if (otpTimer > 0) {
-      interval = setInterval(() => {
-        setOtpTimer((prev) => prev - 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [otpTimer]);
-
-  // Handle Send OTP
-  const handleSendOtp = async () => {
-    setErrorMessage("");
-    setSuccessMessage("");
-
-    if (!mobile || mobile.trim().length !== 10 || !/^\d{10}$/.test(mobile.trim())) {
-      setErrorMessage("Please enter a valid 10-digit mobile number before requesting an OTP.");
-      return;
-    }
-
-    try {
-      setSendingOtp(true);
-      const res = await authService.sendOtp(mobile.trim());
-      setOtpSent(true);
-      setOtpTimer(60);
-      setSuccessMessage(res.message || "OTP sent successfully to your mobile number.");
-    } catch (err) {
-      setErrorMessage(getErrorMessage(err, "Failed to send OTP. Please verify mobile number."));
-    } finally {
-      setSendingOtp(false);
-    }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Safe non-blocking telemetry collection
-  const getCoordinatesSafely = async () => {
-    if (typeof window === "undefined" || !navigator?.geolocation) return { lat: null, long: null };
-    return new Promise((resolve) => {
-      // Timeout after 2.5 seconds so login is never blocked
-      const timer = setTimeout(() => resolve({ lat: null, long: null }), 2500);
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          clearTimeout(timer);
-          resolve({
-            lat: pos.coords.latitude ? String(pos.coords.latitude) : null,
-            long: pos.coords.longitude ? String(pos.coords.longitude) : null,
-          });
-        },
-        () => {
-          clearTimeout(timer);
-          resolve({ lat: null, long: null });
-        },
-        { timeout: 2500 }
-      );
-    });
-  };
-
-  // Form Submit Handler
-  const handleSubmit = async (e) => {
+  // Send OTP
+  const sendOtp = async (e) => {
     e.preventDefault();
-    setErrorMessage("");
-    setSuccessMessage("");
-
-    const cleanedMobile = mobile.trim();
-    if (!cleanedMobile || cleanedMobile.length !== 10 || !/^\d{10}$/.test(cleanedMobile)) {
-      setErrorMessage("Please enter a valid 10-digit mobile number.");
-      return;
-    }
 
     if (!isTermsAccepted) {
-      setErrorMessage("Please accept the Terms of Service & Privacy Policy to continue.");
+      Swal.fire({
+        icon: "warning",
+        title: "Terms Required",
+        text: "Please agree to the Terms and Privacy Policy to continue!",
+      });
+      return;
+    }
+    if (formData.mobileNumber.length !== 10) {
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid Mobile",
+        text: "Please enter a 10-digit mobile number to send OTP!",
+      });
       return;
     }
 
-    if (loginMode === "password") {
-      if (!password) {
-        setErrorMessage("Please enter your account password.");
-        return;
-      }
-    } else {
-      if (!otp || otp.trim().length < 4) {
-        setErrorMessage("Please enter the OTP sent to your registered mobile number.");
-        return;
-      }
+    setLoadingOtp(true);
+    try {
+      const response = await apiClient.post("/auth/send-otp", {
+        mobileNumber: formData.mobileNumber,
+        ifLogin: true,
+        type: "login",
+      });
+
+      Swal.fire({
+        title: response.data?.message || "OTP sent successfully!",
+        icon: "success",
+      });
+      setShowOtpField(true);
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to send OTP. Please try again.";
+
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: errorMessage,
+      });
+    } finally {
+      setLoadingOtp(false);
+    }
+  };
+
+  // Handle Login (Supports Password or OTP)
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    if (!isTermsAccepted) {
+      Swal.fire({
+        icon: "warning",
+        title: "Terms Required",
+        text: "Please agree to the Terms and Privacy Policy to login!",
+      });
+      return;
+    }
+    if (formData.mobileNumber.length !== 10) {
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid Mobile",
+        text: "Please enter a 10-digit mobile number to login!",
+      });
+      return;
+    }
+    if (showOtpField && otp?.length !== 6) {
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid OTP",
+        text: "Please enter the 6-digit OTP sent to your mobile number!",
+      });
+      return;
     }
 
+    setLoadingPass(true);
     try {
-      setIsSubmitting(true);
-      const coords = await getCoordinatesSafely();
-
-      const credentials = {
-        mobile: cleanedMobile,
-        lat: coords.lat,
-        long: coords.long,
+      const payload = {
+        mobile: formData.mobileNumber,
+        mobileNumber: formData.mobileNumber,
       };
 
-      if (loginMode === "password") {
-        credentials.password = password;
+      if (showOtpField && otp) {
+        payload.otp = otp;
+      } else if (formData.password) {
+        payload.password = formData.password;
       } else {
-        credentials.otp = otp.trim();
+        Swal.fire({
+          icon: "warning",
+          title: "Missing Credentials",
+          text: "Please enter password or request OTP to log in!",
+        });
+        setLoadingPass(false);
+        return;
       }
 
-      const result = await login(credentials);
+      // Execute login via centralized AuthContext
+      const userResult = await login(payload);
 
-      // Redirect to target or role-based dashboard
-      const targetDashboard =
-        location.state?.from?.pathname || getRoleDashboardPath(result.role);
-      navigate(targetDashboard, { replace: true });
-    } catch (err) {
-      setErrorMessage(getErrorMessage(err, "Login failed. Please check credentials."));
+      Swal.fire({
+        title: "Login Successful!",
+        text: `Welcome back, ${userResult?.name || "User"}!`,
+        icon: "success",
+      }).then(() => {
+        const dest = getRoleDashboardPath(userResult?.role);
+        navigate(dest, { replace: true });
+      });
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Invalid login credentials. Please check your details.";
+
+      Swal.fire({
+        icon: "error",
+        title: "Login Failed",
+        text: errorMessage,
+      });
     } finally {
-      setIsSubmitting(false);
+      setLoadingPass(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        {/* Brand Header */}
-        <div className="text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-blue text-white shadow-lg shadow-brand-blue/30 mb-3">
-            <ShieldCheck className="w-8 h-8" />
-          </div>
-          <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            SaveDost
-          </h2>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Sign in to access your secure portal
-          </p>
-        </div>
-
-        {/* Login Card */}
-        <Card className="mt-8 border-slate-200 dark:border-slate-800 shadow-xl" padding="lg">
-          {/* Mode Switcher Tabs */}
-          <div className="grid grid-cols-2 gap-1 p-1 mb-6 bg-slate-100 dark:bg-slate-800 rounded-xl">
-            <button
-              type="button"
-              id="password-login-tab"
-              onClick={() => {
-                setLoginMode("password");
-                setErrorMessage("");
-                setSuccessMessage("");
-              }}
-              className={`py-2 text-xs font-semibold rounded-lg transition-all ${
-                loginMode === "password"
-                  ? "bg-white dark:bg-slate-700 text-brand-blue shadow-sm font-bold"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-              }`}
-            >
-              Password Login
-            </button>
-            <button
-              type="button"
-              id="otp-login-tab"
-              onClick={() => {
-                setLoginMode("otp");
-                setErrorMessage("");
-                setSuccessMessage("");
-              }}
-              className={`py-2 text-xs font-semibold rounded-lg transition-all ${
-                loginMode === "otp"
-                  ? "bg-white dark:bg-slate-700 text-brand-blue shadow-sm font-bold"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-              }`}
-            >
-              OTP Login
-            </button>
-          </div>
-
-          {/* Feedback Messages */}
-          {errorMessage && (
-            <div className="mb-4 p-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 rounded-xl flex items-start space-x-2 text-red-700 dark:text-red-300 text-xs">
-              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-              <span>{errorMessage}</span>
-            </div>
-          )}
-
-          {successMessage && (
-            <div className="mb-4 p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/50 rounded-xl flex items-start space-x-2 text-emerald-700 dark:text-emerald-300 text-xs">
-              <CheckCircle2 className="w-4 h-4 flex-shrink-0 mt-0.5" />
-              <span>{successMessage}</span>
-            </div>
-          )}
-
-          {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Mobile Number Field */}
-            <div>
-              <Input
-                label="Mobile Number"
-                id="login-mobile-input"
-                name="mobile"
-                type="tel"
-                maxLength={10}
-                placeholder="Enter 10-digit mobile number"
-                value={mobile}
-                onChange={(e) => setMobile(e.target.value.replace(/\D/g, ""))}
-                leftIcon={<Phone className="w-4 h-4 text-slate-400" />}
-                required
-                autoComplete="tel"
-              />
-            </div>
-
-            {/* Password Login Mode */}
-            {loginMode === "password" ? (
+    <>
+      <div className="min-h-screen flex bg-white overflow-y-hidden">
+        {/* Left Panel - Form */}
+        <div className="flex-1 p-6 sm:p-8 flex flex-col justify-center max-w-xl mx-auto w-full">
+          {/* Top Brand Header */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between my-4">
               <div>
-                <Input
-                  label="Password"
-                  id="login-password-input"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter your account password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  leftIcon={<Lock className="w-4 h-4 text-slate-400" />}
-                  rightIcon={
-                    <button
-                      type="button"
-                      aria-label={showPassword ? "Hide password" : "Show password"}
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="text-slate-400 hover:text-slate-600 focus:outline-none"
-                    >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  }
-                  required
-                  autoComplete="current-password"
+                <img
+                  src="/7unique.png"
+                  alt="Finunique Logo"
+                  width={110}
+                  className="object-contain"
                 />
               </div>
-            ) : (
-              /* OTP Login Mode */
-              <div className="space-y-3">
-                <div className="flex items-end space-x-2">
-                  <div className="flex-1">
-                    <Input
-                      label="6-Digit OTP"
-                      id="login-otp-input"
-                      name="otp"
-                      type="text"
-                      maxLength={6}
-                      placeholder="Enter received OTP"
-                      value={otp}
-                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-                      leftIcon={<KeyRound className="w-4 h-4 text-slate-400" />}
-                      autoComplete="one-time-code"
-                      disabled={!otpSent}
-                    />
-                  </div>
-                  <Button
+
+              <div className="text-right">
+                <div className="text-sm text-gray-600">
+                  {"Don't have an account? "}
+                  <button
                     type="button"
-                    variant={otpSent ? "secondary" : "primary"}
-                    size="md"
-                    onClick={handleSendOtp}
-                    isLoading={sendingOtp}
-                    disabled={sendingOtp || otpTimer > 0 || mobile.length !== 10}
-                    className="mb-[2px] whitespace-nowrap"
+                    className="p-0 text-[#027da8] hover:underline font-semibold"
+                    onClick={() => navigate("/register")}
                   >
-                    {otpTimer > 0
-                      ? `Resend (${otpTimer}s)`
-                      : otpSent
-                      ? "Resend OTP"
-                      : "Send OTP"}
-                  </Button>
+                    Register
+                  </button>
                 </div>
-                {!otpSent && (
-                  <p className="text-xs text-slate-500">
-                    Click <strong>Send OTP</strong> to receive a code on your registered mobile.
-                  </p>
+                <div className="mt-1">
+                  <button
+                    type="button"
+                    onClick={() => setYoutube(true)}
+                    className="text-[#027da8] font-semibold hover:underline animate-pulse inline-flex items-center gap-1.5 text-xs sm:text-sm"
+                  >
+                    <svg
+                      className="w-6 h-6 text-red-600 shrink-0"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                    </svg>
+                    <span>How to register</span>
+                    <span className="inline-block animate-bounce font-bold">?</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Page Heading */}
+            <h1 className="text-4xl sm:text-5xl text-center font-bold text-[#027da8] mb-1">
+              Welcome Back!
+            </h1>
+            <p className="text-gray-600 text-sm sm:text-base text-center">
+              Please Enter Your Login Details
+            </p>
+          </div>
+
+          {/* Form */}
+          <div className="space-y-5">
+            <form onSubmit={handleLogin}>
+              <div className="space-y-4">
+                {/* Mobile Number Field */}
+                <div className="space-y-1">
+                  <label
+                    htmlFor="mobileNumber"
+                    className="text-sm sm:text-base font-medium text-gray-800"
+                  >
+                    Mobile Number
+                  </label>
+                  <div className="relative">
+                    <div className="flex items-center border-2 border-[#027da8]/30 rounded-xl px-3 py-3 focus-within:border-[#027da8] bg-white transition-colors">
+                      <Phone className="w-5 h-5 text-[#027da8] mr-3 shrink-0" />
+                      <span className="text-gray-600 font-medium mr-2 select-none">
+                        +91
+                      </span>
+                      <input
+                        type="tel"
+                        id="mobileNumber"
+                        name="mobileNumber"
+                        value={formData.mobileNumber}
+                        onChange={handleChange}
+                        onInput={(e) => {
+                          let val = e.target.value.replace(/\D/g, "");
+                          if (val.length > 10) val = val.slice(0, 10);
+                          if (val.length === 1 && !/[6-9]/.test(val)) val = "";
+                          e.target.value = val;
+                          handleChange({
+                            target: { name: "mobileNumber", value: val },
+                          });
+                        }}
+                        placeholder="Enter Mobile Number"
+                        className="w-full border-0 p-0 focus:outline-none text-sm sm:text-base text-gray-800 bg-transparent"
+                        required
+                        inputMode="numeric"
+                        maxLength={10}
+                        disabled={showOtpField}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Password Field (When not showing OTP) */}
+                {!showOtpField && (
+                  <div className="space-y-1">
+                    <label
+                      htmlFor="password"
+                      className="text-sm sm:text-base font-medium text-gray-800"
+                    >
+                      Password
+                    </label>
+                    <div className="relative">
+                      <div className="flex items-center border-2 border-[#027da8]/30 rounded-xl px-3 py-3 focus-within:border-[#027da8] bg-white transition-colors">
+                        <Lock className="w-5 h-5 text-[#027da8] mr-3 shrink-0" />
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          id="password"
+                          name="password"
+                          value={formData.password}
+                          onChange={handleChange}
+                          placeholder="Enter Password"
+                          className="w-full border-0 p-0 focus:outline-none text-sm sm:text-base text-gray-800 bg-transparent"
+                          disabled={showOtpField}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="ml-2 text-[#027da8] focus:outline-none p-1"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="w-5 h-5" />
+                          ) : (
+                            <Eye className="w-5 h-5" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* OTP Verification Boxes (When showOtpField is true) */}
+                {showOtpField && (
+                  <div className="space-y-3 pt-2">
+                    <label
+                      htmlFor="otp"
+                      className="text-slate-700 text-sm sm:text-base font-medium block"
+                    >
+                      Enter 6-Digit OTP
+                    </label>
+                    <div className="flex items-center border-2 border-gray-200 rounded-xl px-3 py-2 bg-slate-50 focus-within:border-[#027da8]">
+                      <Lock className="w-5 h-5 text-gray-400 mr-3 shrink-0" />
+                      <div className="flex space-x-2 flex-1 justify-center">
+                        {[...Array(6)].map((_, i) => (
+                          <input
+                            key={i}
+                            type={showOtp ? "text" : "password"}
+                            inputMode="numeric"
+                            maxLength={1}
+                            value={otp[i] || ""}
+                            onChange={(e) => {
+                              const val = e.target.value.replace(/\D/g, "");
+                              const newOtp = otp.split("");
+                              if (val) {
+                                newOtp[i] = val;
+                                setOtp(newOtp.join(""));
+                                if (i < 5 && e.target.nextSibling) {
+                                  e.target.nextSibling.focus();
+                                }
+                              } else {
+                                newOtp[i] = "";
+                                setOtp(newOtp.join(""));
+                              }
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === "Backspace") {
+                                const newOtp = otp.split("");
+                                if (otp[i]) {
+                                  newOtp[i] = "";
+                                  setOtp(newOtp.join(""));
+                                  e.preventDefault();
+                                } else if (i > 0) {
+                                  const prev = e.target.previousSibling;
+                                  newOtp[i - 1] = "";
+                                  setOtp(newOtp.join(""));
+                                  if (prev) prev.focus();
+                                  e.preventDefault();
+                                }
+                              }
+                            }}
+                            className="w-10 h-10 sm:w-12 sm:h-12 text-center text-lg font-bold border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#027da8] bg-white border-gray-300"
+                          />
+                        ))}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setShowOtp(!showOtp)}
+                        className="ml-2 text-gray-500 hover:text-gray-700 p-1"
+                      >
+                        {showOtp ? (
+                          <EyeOff className="w-5 h-5" />
+                        ) : (
+                          <Eye className="w-5 h-5" />
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="flex flex-col gap-2 pt-2">
+                      <button
+                        type="button"
+                        onClick={handleLogin}
+                        disabled={loadingPass || !isTermsAccepted || otp.length < 6}
+                        className={`w-full py-3 rounded-xl font-medium transition-colors ${
+                          !isTermsAccepted || otp.length < 6
+                            ? "bg-gray-400 cursor-not-allowed text-white"
+                            : "bg-[#018EDE] hover:bg-[#018EDE]/90 text-white"
+                        }`}
+                      >
+                        {loadingPass ? "Verifying..." : "Login"}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowOtpField(false);
+                          setOtp("");
+                        }}
+                        className="w-full py-3 rounded-xl font-medium text-white bg-[#686a6d] hover:bg-[#686a6d]/90 transition-colors"
+                      >
+                        Login with Password
+                      </button>
+                    </div>
+                  </div>
                 )}
               </div>
-            )}
 
-            {/* Terms and Conditions Checkbox */}
-            <div className="flex items-center space-x-2 pt-1">
-              <input
-                id="login-terms-checkbox"
-                type="checkbox"
-                checked={isTermsAccepted}
-                onChange={(e) => setIsTermsAccepted(e.target.checked)}
-                className="w-4 h-4 text-brand-blue rounded border-slate-300 focus:ring-brand-blue/30"
-              />
-              <label htmlFor="login-terms-checkbox" className="text-xs text-slate-600 dark:text-slate-400">
-                I agree to the{" "}
-                <span className="text-brand-blue font-medium hover:underline cursor-pointer">
-                  Terms of Service
-                </span>{" "}
-                and{" "}
-                <span className="text-brand-blue font-medium hover:underline cursor-pointer">
-                  Privacy Policy
-                </span>
-              </label>
-            </div>
+              {/* Terms & Privacy Policy Checkbox */}
+              <div className="flex items-start gap-2 mt-4 text-sm text-slate-600">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  checked={isTermsAccepted}
+                  onChange={(e) => setIsTermsAccepted(e.target.checked)}
+                  className="mt-1 h-4 w-4 cursor-pointer rounded border-gray-300 text-[#027da8] focus:ring-[#027da8]"
+                />
+                <label htmlFor="terms" className="cursor-pointer leading-snug text-xs sm:text-sm">
+                  I agree to the{" "}
+                  <button
+                    type="button"
+                    onClick={() => setShowTerms(true)}
+                    className="text-[#027da8] font-medium hover:underline focus:outline-none"
+                  >
+                    Terms
+                  </button>{" "}
+                  and{" "}
+                  <button
+                    type="button"
+                    onClick={() => setShowPrivacy(true)}
+                    className="text-[#027da8] font-medium hover:underline focus:outline-none"
+                  >
+                    Privacy Policy
+                  </button>
+                </label>
+              </div>
 
-            {/* Submit Button */}
-            <div className="pt-2">
-              <Button
-                id="login-submit-button"
-                type="submit"
-                variant="primary"
-                size="lg"
-                fullWidth
-                isLoading={isSubmitting}
-                disabled={isSubmitting || !isTermsAccepted}
-              >
-                {loginMode === "password" ? "Sign In with Password" : "Sign In with OTP"}
-              </Button>
-            </div>
-          </form>
+              {/* Action Buttons (When not showing OTP boxes) */}
+              {!showOtpField && (
+                <div className="flex flex-col gap-3 mt-4">
+                  <button
+                    type="button"
+                    onClick={handleLogin}
+                    disabled={loadingPass || !isTermsAccepted}
+                    className={`w-full py-3 rounded-xl font-semibold transition-all ${
+                      !isTermsAccepted
+                        ? "bg-gray-400 cursor-not-allowed text-white"
+                        : "bg-[#018EDE] hover:bg-[#018EDE]/90 text-white shadow-md shadow-[#018EDE]/20"
+                    }`}
+                  >
+                    {loadingPass ? "Logging in..." : "Login with Password"}
+                  </button>
 
-          {/* Footer Navigation */}
-          <div className="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800 text-center text-xs text-slate-500 dark:text-slate-400">
-            Don't have an account?{" "}
-            <Link
-              to="/register"
-              id="go-to-register-link"
-              className="font-semibold text-brand-blue hover:text-brand-blue/80 transition-colors"
-            >
-              Create Account
-            </Link>
+                  <button
+                    type="button"
+                    onClick={sendOtp}
+                    disabled={loadingOtp || !isTermsAccepted}
+                    className={`w-full py-3 rounded-xl font-semibold transition-all ${
+                      !isTermsAccepted
+                        ? "bg-gray-400 cursor-not-allowed text-white"
+                        : "bg-[#686a6d] hover:bg-[#686a6d]/90 text-white shadow-md shadow-gray-500/20"
+                    }`}
+                  >
+                    {loadingOtp ? "Sending OTP..." : "Login with OTP"}
+                  </button>
+                </div>
+              )}
+            </form>
           </div>
-        </Card>
+
+          {/* Security Features Footnote */}
+          <div className="mt-8 flex items-center justify-center space-x-6 text-xs text-slate-500">
+            <div className="flex items-center space-x-1.5">
+              <Shield className="w-4 h-4 text-[#027da8]" />
+              <span>Secure Login</span>
+            </div>
+            <div className="flex items-center space-x-1.5">
+              <Lock className="w-4 h-4 text-[#027da8]" />
+              <span>OTP Protected</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Panel - Decorative Gradient with Floating Cards */}
+        <div className="relative md:w-[50vw] bg-gradient-to-br from-[#d2709a] via-[#027da8] to-[#6b2945] overflow-hidden hidden md:flex items-center justify-center select-none">
+          {/* Central Image */}
+          <div className="relative z-20">
+            <img
+              src="/login.png"
+              alt="Dashboard Preview"
+              className="w-[42vw] max-w-[560px] mx-auto drop-shadow-2xl"
+            />
+          </div>
+
+          {/* Floating Card 1: Fast Registration (Top-Left) */}
+          <div className="absolute top-8 left-12 w-64 p-5 bg-white/20 backdrop-blur-lg border border-white/30 rounded-2xl shadow-2xl z-10 animate-float-1">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 bg-gradient-to-tr from-blue-400 to-purple-500 shadow-lg">
+              <CheckCircle className="w-6 h-6 text-white" />
+            </div>
+            <h3 className="text-base font-bold text-white mb-1 text-center">
+              Fast Registration
+            </h3>
+            <p className="text-xs text-white/80 text-center mb-3">
+              Set up your account securely in under 3 minutes
+            </p>
+            <div className="mx-auto w-fit px-3 py-0.5 bg-white/20 text-white text-xs font-semibold rounded-full backdrop-blur-sm">
+              3 min
+            </div>
+          </div>
+
+          {/* Floating Card 2: Trusted Platform (Top-Right) */}
+          <div className="absolute top-16 right-16 w-64 p-5 bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl z-30 animate-float-2">
+            <div className="text-center">
+              <div className="flex items-center justify-center space-x-1.5 mb-2">
+                <div className="w-7 h-7 bg-amber-100 rounded-full flex items-center justify-center">
+                  <span className="text-amber-600 font-bold text-sm">★</span>
+                </div>
+                <div className="w-7 h-7 bg-amber-100 rounded-full flex items-center justify-center">
+                  <span className="text-amber-600 font-bold text-sm">★</span>
+                </div>
+                <div className="w-7 h-7 bg-amber-100 rounded-full flex items-center justify-center">
+                  <span className="text-amber-600 font-bold text-sm">★</span>
+                </div>
+              </div>
+              <h3 className="font-bold text-gray-900 mb-0.5 text-base">
+                Trusted Platform
+              </h3>
+              <p className="text-xs text-gray-600">
+                Join 50,000+ satisfied users
+              </p>
+            </div>
+          </div>
+
+          {/* Floating Card 3: OTP Security (Bottom-Left) */}
+          <div className="absolute bottom-12 left-16 w-64 p-5 bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl z-30 animate-float-3">
+            <div className="flex items-start mb-2.5">
+              <Key className="w-5 h-5 text-orange-500 mr-2.5 mt-0.5 shrink-0" />
+              <div>
+                <h3 className="font-bold text-gray-900 text-sm">
+                  OTP Security
+                </h3>
+                <p className="text-xs text-gray-600">Secure OTP verification</p>
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <div className="h-2 bg-emerald-500 rounded-full w-full" />
+              <div className="h-2 bg-[#027da8] rounded-full w-2/3" />
+              <div className="h-2 bg-amber-500 rounded-full w-1/3" />
+            </div>
+          </div>
+
+          {/* Floating Card 4: Bank-Level Security (Bottom-Right) */}
+          <div className="absolute bottom-8 right-12 w-64 p-5 bg-white/20 backdrop-blur-lg border border-white/30 rounded-2xl shadow-2xl z-10 animate-float-4">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2.5 bg-gradient-to-tr from-green-400 to-emerald-500 shadow-lg">
+              <Shield className="w-6 h-6 text-white" />
+            </div>
+            <h3 className="text-base font-bold text-white mb-1 text-center">
+              Bank-Level Security
+            </h3>
+            <p className="text-xs text-white/80 text-center mb-3">
+              Your data and transactions are protected with top-tier security standards
+            </p>
+            <div className="mx-auto w-fit px-3 py-0.5 bg-white/20 text-white text-xs font-semibold rounded-full backdrop-blur-sm">
+              Secure
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+
+      {/* Floating YouTube Side Widget */}
+      <SideIframeVideo
+        src="https://www.youtube.com/embed/LsLV1Emkb-Q?si=EepaHlUk19iWeB4B&autoplay=1&controls=0&loop=1&mute=1"
+        heading="रजिस्ट्रेशन का आसान तरीका — वीडियो में देखें"
+        youtube={youtube}
+      />
+
+      {/* Full-Screen YouTube Video Modal */}
+      {youtube && (
+        <>
+          <div
+            className="fixed inset-0 backdrop-blur-md bg-black/60 z-50 transition-opacity"
+            onClick={() => setYoutube(false)}
+          />
+          <div className="fixed inset-0 flex items-center justify-center z-50 p-4 pointer-events-none">
+            <div className="bg-black rounded-2xl overflow-hidden shadow-2xl w-full max-w-3xl pointer-events-auto relative">
+              <button
+                type="button"
+                onClick={() => setYoutube(false)}
+                className="absolute top-3 right-3 text-white text-2xl z-50 hover:text-red-400 p-1"
+              >
+                ✕
+              </button>
+              <div className="relative pb-[56.25%] h-0">
+                <iframe
+                  className="absolute top-0 left-0 w-full h-full"
+                  src="https://www.youtube.com/embed/LsLV1Emkb-Q?si=EepaHlUk19iWeB4B&autoplay=1"
+                  title="How to register video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Modals for Terms and Privacy Policy */}
+      {showTerms && <TermsModal setShowTerms={setShowTerms} />}
+      {showPrivacy && <PrivacyPolicyModal setShowPrivacy={setShowPrivacy} />}
+    </>
   );
 };
 

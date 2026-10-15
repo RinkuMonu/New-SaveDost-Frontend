@@ -1,0 +1,61 @@
+@keyframes float1 {
+  0%, 100% {
+    transform: translateY(0px) rotate(-6deg) scale(0.95);
+  }
+  50% {
+    transform: translateY(-16px) rotate(-4deg) scale(0.98);
+  }
+}
+
+@keyframes float2 {
+  0%, 100% {
+    transform: translateY(0px) rotate(3deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(5deg);
+  }
+}
+
+@keyframes float3 {
+  0%, 100% {
+    transform: translateY(0px) rotate(2deg);
+  }
+  50% {
+    transform: translateY(-18px) rotate(3deg);
+  }
+}
+
+@keyframes float4 {
+  0%, 100% {
+    transform: translateY(0px) rotate(-3deg) scale(0.95);
+  }
+  50% {
+    transform: translateY(-15px) rotate(-1deg) scale(0.98);
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+.animate-float-1 {
+  animation: float1 5s ease-in-out infinite;
+}
+
+.animate-float-2 {
+  animation: float2 5.5s ease-in-out infinite;
+}
+
+.animate-float-3 {
+  animation: float3 6s ease-in-out infinite;
+}
+
+.animate-float-4 {
+  animation: float4 5.2s ease-in-out infinite;
+}
+
+.shake {
+  animation: shake 0.5s ease-in-out;
+}
