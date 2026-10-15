@@ -68,8 +68,8 @@ export const PartnerTopUpModal = ({ isOpen, onClose, onSuccess }) => {
       description="Request pre-funding balance for automated API service settlements"
       maxWidth="max-w-lg"
       footer={
-        <div className="flex items-center justify-between w-full">
-          <Button variant="outline" size="sm" onClick={onClose} disabled={isSubmitting}>
+        <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 w-full">
+          <Button variant="outline" size="sm" onClick={onClose} disabled={isSubmitting} className="w-full sm:w-auto">
             Cancel
           </Button>
           <Button
@@ -78,6 +78,7 @@ export const PartnerTopUpModal = ({ isOpen, onClose, onSuccess }) => {
             isLoading={isSubmitting}
             onClick={handleSubmit}
             leftIcon={<ArrowUpRight className="w-4 h-4" />}
+            className="w-full sm:w-auto"
           >
             Submit Funding Request
           </Button>

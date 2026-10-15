@@ -131,7 +131,7 @@ export const Header = ({ onToggleSidebar, isDesktopCollapsed, isMobileOpen }) =>
             </button>
 
             {isNotificationsOpen && (
-              <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-[#E2EEF5] dark:border-slate-800 py-3 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+              <div className="absolute right-0 mt-2 w-[calc(100vw-2rem)] max-w-sm sm:w-96 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-[#E2EEF5] dark:border-slate-800 py-3 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                 <div className="px-4 pb-2 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">
                     Notifications & Alerts
@@ -216,7 +216,7 @@ export const Header = ({ onToggleSidebar, isDesktopCollapsed, isMobileOpen }) =>
             </button>
 
             {isProfileOpen && (
-              <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-[#E2EEF5] dark:border-slate-800 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+              <div className="absolute right-0 mt-2 w-64 max-w-[calc(100vw-2rem)] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-[#E2EEF5] dark:border-slate-800 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                 {/* User Summary */}
                 <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800">
                   <p className="text-xs font-bold text-slate-900 dark:text-white truncate">

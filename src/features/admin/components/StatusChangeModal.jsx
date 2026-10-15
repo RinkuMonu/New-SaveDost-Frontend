@@ -46,8 +46,8 @@ export const StatusChangeModal = ({ isOpen, onClose, user, onSuccess }) => {
       description="Update account operational status and access permissions"
       maxWidth="max-w-md"
       footer={
-        <div className="flex items-center justify-end space-x-2 w-full">
-          <Button variant="outline" size="sm" onClick={onClose} disabled={isSubmitting}>
+        <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 w-full">
+          <Button variant="outline" size="sm" onClick={onClose} disabled={isSubmitting} className="w-full sm:w-auto">
             Cancel
           </Button>
           <Button
@@ -55,6 +55,7 @@ export const StatusChangeModal = ({ isOpen, onClose, user, onSuccess }) => {
             size="sm"
             isLoading={isSubmitting}
             onClick={handleConfirm}
+            className="w-full sm:w-auto"
           >
             Confirm {targetStatus}
           </Button>

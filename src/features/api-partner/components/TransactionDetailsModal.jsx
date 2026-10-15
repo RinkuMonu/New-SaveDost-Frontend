@@ -108,15 +108,15 @@ export const TransactionDetailsModal = ({ isOpen, onClose, transaction }) => {
               <Hash className="w-3.5 h-3.5 text-slate-400" />
               <span>Reference ID</span>
             </span>
-            <span className="font-mono font-semibold text-slate-800 select-all">
+            <span className="font-mono font-semibold text-slate-800 select-all break-all text-right ml-2">
               {transaction.referenceId || transaction._id || transaction.id || "—"}
             </span>
           </div>
 
           {transaction.utr && (
             <div className="flex items-center justify-between pt-2">
-              <span className="text-slate-500">UTR / Bank Ref</span>
-              <span className="font-mono font-semibold text-slate-800">
+              <span className="text-slate-500 shrink-0">UTR / Bank Ref</span>
+              <span className="font-mono font-semibold text-slate-800 break-all text-right ml-2">
                 {transaction.utr}
               </span>
             </div>

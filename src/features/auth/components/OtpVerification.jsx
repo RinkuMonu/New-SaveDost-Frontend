@@ -80,14 +80,14 @@ export const OtpVerification = ({
         <label htmlFor="otp" className="text-slate-700 font-semibold text-sm sm:text-base">
           Enter 6-Digit OTP *
         </label>
-        <div className="flex justify-center sm:justify-start gap-2 pt-1">
+        <div className="flex justify-center sm:justify-start gap-1.5 sm:gap-2 pt-1">
           {Array.from({ length: 6 }).map((_, index) => (
             <input
               key={index}
               type="text"
               inputMode="numeric"
               maxLength={1}
-              className="w-11 h-11 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded-xl focus:border-[#027da8] focus:ring-1 focus:ring-[#027da8] text-lg font-bold text-gray-800 bg-white"
+              className="w-9 h-10 sm:w-12 sm:h-12 text-center border-2 border-gray-300 rounded-xl focus:border-[#027da8] focus:ring-1 focus:ring-[#027da8] text-base sm:text-lg font-bold text-gray-800 bg-white"
               value={otp[index] || ""}
               onChange={(e) => {
                 const val = e.target.value.replace(/\D/g, "");

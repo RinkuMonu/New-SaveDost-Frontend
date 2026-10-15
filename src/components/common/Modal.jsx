@@ -36,7 +36,7 @@ const Modal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-brand-navy/40 backdrop-blur-sm transition-opacity"
@@ -54,10 +54,10 @@ const Modal = ({
         `}
       >
         {/* Header */}
-        <div className="flex items-start justify-between p-5 border-b border-brand-border">
+        <div className="flex items-start justify-between p-4 sm:p-5 border-b border-brand-border">
           <div>
             {title && (
-              <h3 className="text-lg font-bold text-brand-navy">{title}</h3>
+              <h3 className="text-base sm:text-lg font-bold text-brand-navy">{title}</h3>
             )}
             {description && (
               <p className="text-xs sm:text-sm text-brand-muted mt-0.5">{description}</p>
@@ -66,7 +66,7 @@ const Modal = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-brand-navy hover:bg-slate-100 transition-colors"
+            className="p-1 rounded-lg text-slate-400 hover:text-brand-navy hover:bg-slate-100 transition-colors ml-2"
             aria-label="Close"
           >
             <X size={18} />
@@ -74,11 +74,11 @@ const Modal = ({
         </div>
 
         {/* Body */}
-        <div className="p-5 max-h-[75vh] overflow-y-auto">{children}</div>
+        <div className="p-4 sm:p-5 max-h-[80vh] overflow-y-auto">{children}</div>
 
         {/* Footer */}
         {footer && (
-          <div className="flex items-center justify-end gap-3 p-4 bg-slate-50 border-t border-brand-border">
+          <div className="flex items-center justify-end gap-3 p-3.5 sm:p-4 bg-slate-50 border-t border-brand-border">
             {footer}
           </div>
         )}

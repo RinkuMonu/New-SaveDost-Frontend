@@ -404,8 +404,8 @@ export const PartnerWalletPage = () => {
                 <p className="text-xs uppercase tracking-wider text-white/80 font-medium">
                   Available Settlement Balance
                 </p>
-                <div className="flex items-baseline space-x-2 mt-1">
-                  <span className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                <div className="flex items-baseline space-x-2 mt-1 min-w-0">
+                  <span className="text-2xl sm:text-4xl font-extrabold tracking-tight truncate">
                     ₹{balanceData.balance.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                   </span>
                   <span className="text-xs uppercase text-white/70 font-semibold">

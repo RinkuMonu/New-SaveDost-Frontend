@@ -167,7 +167,7 @@ export const LoginPage = () => {
 
   return (
     <>
-      <div className="min-h-screen flex bg-white overflow-y-hidden">
+      <div className="min-h-screen flex bg-white overflow-x-hidden overflow-y-auto">
         {/* Left Panel - Form */}
         <div className="flex-1 p-6 sm:p-8 flex flex-col justify-center max-w-xl mx-auto w-full">
           {/* Top Brand Header */}
@@ -313,9 +313,9 @@ export const LoginPage = () => {
                     >
                       Enter 6-Digit OTP
                     </label>
-                    <div className="flex items-center border-2 border-gray-200 rounded-xl px-3 py-2 bg-slate-50 focus-within:border-[#027da8]">
-                      <Lock className="w-5 h-5 text-gray-400 mr-3 shrink-0" />
-                      <div className="flex space-x-2 flex-1 justify-center">
+                    <div className="flex items-center border-2 border-gray-200 rounded-xl px-2.5 sm:px-3 py-2 bg-slate-50 focus-within:border-[#027da8]">
+                      <Lock className="w-5 h-5 text-gray-400 mr-2 sm:mr-3 shrink-0" />
+                      <div className="flex space-x-1.5 sm:space-x-2 flex-1 justify-center">
                         {[...Array(6)].map((_, i) => (
                           <input
                             key={i}
@@ -353,7 +353,7 @@ export const LoginPage = () => {
                                 }
                               }
                             }}
-                            className="w-10 h-10 sm:w-12 sm:h-12 text-center text-lg font-bold border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#027da8] bg-white border-gray-300"
+                            className="w-8 h-9 sm:w-12 sm:h-12 text-center text-base sm:text-lg font-bold border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#027da8] bg-white border-gray-300"
                           />
                         ))}
                       </div>

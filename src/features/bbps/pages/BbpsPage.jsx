@@ -133,15 +133,15 @@ export const BbpsPage = () => {
               <span>Bill Payment Order Prepared!</span>
             </div>
             <p className="text-xs text-brand-muted">
-              Service Order Ref: <strong className="font-mono text-brand-navy select-all">{orderResult.serviceOrder?._id || "ORD-" + Date.now()}</strong>
+              Service Order Ref: <strong className="font-mono text-brand-navy select-all break-all">{orderResult.serviceOrder?._id || "ORD-" + Date.now()}</strong>
             </p>
-            <div className="flex items-center space-x-3 pt-2">
-              <Link to="/user/payments">
-                <Button variant="primary" size="sm" rightIcon={<ArrowRight className="w-4 h-4" />}>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-2">
+              <Link to="/user/payments" className="w-full sm:w-auto">
+                <Button variant="primary" size="sm" fullWidth rightIcon={<ArrowRight className="w-4 h-4" />}>
                   Proceed to Direct Gateway Checkout
                 </Button>
               </Link>
-              <Button variant="outline" size="sm" onClick={() => { setOrderResult(null); setFetchedBill(null); }}>
+              <Button variant="outline" size="sm" fullWidth onClick={() => { setOrderResult(null); setFetchedBill(null); }} className="sm:w-auto">
                 Pay Another Bill
               </Button>
             </div>

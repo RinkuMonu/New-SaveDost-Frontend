@@ -213,6 +213,7 @@ export const UserProfilePage = () => {
                     type="submit"
                     variant="primary"
                     size="sm"
+                    className="w-full sm:w-auto"
                     isLoading={isUpdatingPassword}
                     disabled={isUpdatingPassword || !passwordForm.oldPassword || !passwordForm.newPassword}
                   >

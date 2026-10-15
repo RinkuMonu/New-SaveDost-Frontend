@@ -95,7 +95,7 @@ export const DirectPaymentPortalPage = () => {
                 <div className="flex items-center justify-between pb-4 border-b border-brand-border">
                   <div>
                     <span className="text-xs text-brand-muted block">Order ID</span>
-                    <strong className="font-mono text-brand-navy select-all">
+                    <strong className="font-mono text-brand-navy select-all break-all">
                       {paymentResult.orderId || paymentResult._id || orderId}
                     </strong>
                   </div>
@@ -114,7 +114,7 @@ export const DirectPaymentPortalPage = () => {
                   </Badge>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs">
                   <div>
                     <span className="text-brand-muted block">Payment Amount</span>
                     <strong className="text-brand-navy text-sm font-bold">
@@ -129,7 +129,7 @@ export const DirectPaymentPortalPage = () => {
                   </div>
                   <div>
                     <span className="text-brand-muted block">Gateway Reference ID</span>
-                    <strong className="font-mono text-brand-navy text-sm select-all">
+                    <strong className="font-mono text-brand-navy text-sm select-all break-all">
                       {paymentResult.gatewayRefId || paymentResult.referenceId || "—"}
                     </strong>
                   </div>

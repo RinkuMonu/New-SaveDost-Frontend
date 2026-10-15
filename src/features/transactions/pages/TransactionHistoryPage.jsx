@@ -185,7 +185,7 @@ export const TransactionHistoryPage = () => {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="h-[42px] px-3 rounded-xl border border-brand-border text-xs text-brand-navy bg-white focus:outline-none focus:ring-2 focus:ring-brand-blue/20 font-medium"
+                className="w-full sm:w-auto flex-1 sm:flex-initial h-[42px] px-3 rounded-xl border border-brand-border text-xs text-brand-navy bg-white focus:outline-none focus:ring-2 focus:ring-brand-blue/20 font-medium"
               >
                 <option value="ALL">All Statuses</option>
                 <option value="Success">Success</option>
@@ -259,8 +259,8 @@ export const TransactionHistoryPage = () => {
 
             <div className="space-y-2 text-xs divide-y divide-slate-100">
               <div className="flex items-center justify-between pt-2">
-                <span className="text-slate-500">Order ID</span>
-                <span className="font-mono font-bold text-slate-800">{selectedReceipt.order_id || selectedReceipt._id || "—"}</span>
+                <span className="text-slate-500 shrink-0">Order ID</span>
+                <span className="font-mono font-bold text-slate-800 select-all break-all text-right ml-2">{selectedReceipt.order_id || selectedReceipt._id || "—"}</span>
               </div>
               <div className="flex items-center justify-between pt-2">
                 <span className="text-slate-500">Service</span>

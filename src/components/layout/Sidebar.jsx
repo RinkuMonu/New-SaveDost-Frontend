@@ -99,7 +99,7 @@ export const Sidebar = ({
           ${isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
           ${/* Desktop width */ ""}
           ${isDesktopCollapsed ? "lg:w-20" : "lg:w-64"}
-          w-72 shadow-xl lg:shadow-none
+          w-72 max-w-[85vw] shadow-xl lg:shadow-none
         `}
       >
         {/* Sidebar Header / Branding */}

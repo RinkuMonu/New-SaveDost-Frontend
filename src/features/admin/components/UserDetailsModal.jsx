@@ -50,11 +50,11 @@ export const UserDetailsModal = ({
       description="Inspect account identity, KYC standing, and administrative actions"
       maxWidth="max-w-2xl"
       footer={
-        <div className="flex items-center justify-between w-full">
-          <Button variant="outline" size="sm" onClick={onClose}>
+        <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-2.5 w-full">
+          <Button variant="outline" size="sm" onClick={onClose} className="w-full sm:w-auto">
             Close
           </Button>
-          <div className="flex items-center space-x-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <Button
               variant="secondary"
               size="sm"
@@ -63,6 +63,7 @@ export const UserDetailsModal = ({
                 onClose();
                 onEdit(user);
               }}
+              className="w-full sm:w-auto"
             >
               Edit Profile
             </Button>
@@ -74,6 +75,7 @@ export const UserDetailsModal = ({
                 onClose();
                 onChangeStatus(user);
               }}
+              className="w-full sm:w-auto"
             >
               {isUserActive ? "Deactivate User" : "Activate User"}
             </Button>
