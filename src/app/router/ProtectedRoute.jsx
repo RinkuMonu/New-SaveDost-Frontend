@@ -35,13 +35,19 @@ export const ProtectedRoute = ({
   }
 
   // 2. Public-only routes (e.g. /login, /register): redirect authenticated users to their role dashboard
-  if (publicOnly && isAuthenticated) {
-    const dashboardPath = getRoleDashboardPath(role);
-    return <Navigate to={dashboardPath} replace />;
+  if (publicOnly) {
+    if (isAuthenticated && role) {
+      const dashboardPath = getRoleDashboardPath(role);
+      return <Navigate to={dashboardPath} replace />;
+    }
+    return <>{content}</>;
   }
 
   // 3. Protected route requires authentication
   if (requireAuth && !isAuthenticated) {
+    if (location.pathname === "/login") {
+      return <>{content}</>;
+    }
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
