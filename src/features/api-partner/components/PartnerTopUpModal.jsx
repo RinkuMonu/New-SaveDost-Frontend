@@ -98,7 +98,7 @@ export const PartnerTopUpModal = ({ isOpen, onClose, onSuccess }) => {
           <div>
             <p className="font-semibold text-brand-navy">Authoritative Financial Processing</p>
             <p className="text-brand-muted mt-0.5">
-              Wallet balances are updated strictly upon backend settlement confirmation. No frontend balance simulation is performed.
+              Wallet balances are updated strictly upon backend settlement confirmation. Under backend specification, direct balance crediting (/wallet/credit) is an Admin/Testing privileged adjustment. Ordinary partner self-credit is subject to backend authorization.
             </p>
           </div>
         </div>

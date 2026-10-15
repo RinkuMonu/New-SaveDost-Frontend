@@ -1,2 +1,2 @@
-// Payments feature module (Direct Payment Gateway Integration)
-export {};
+export { DirectPaymentPortalPage } from "./pages/DirectPaymentPortalPage";
+export { paymentService } from "./services/paymentService";

@@ -1,2 +1,2 @@
-// Recharge feature module (Mobile & DTH)
-export {};
+export { RechargePage } from "./pages/RechargePage";
+export { rechargeService } from "./services/rechargeService";

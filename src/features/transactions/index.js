@@ -1,2 +1,1 @@
-// Transactions and receipts module placeholder
-export {};
+export { TransactionHistoryPage } from "./pages/TransactionHistoryPage";

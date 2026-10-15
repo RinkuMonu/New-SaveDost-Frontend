@@ -5,7 +5,11 @@ import ProtectedRoute from "./ProtectedRoute";
 import { LoginPage, RegisterPage, UnauthorizedPage } from "../../features/auth";
 import { AdminDashboardPlaceholder, UserListPage } from "../../features/admin";
 import { ApiPartnerDashboardPlaceholder, PartnerWalletPage } from "../../features/api-partner";
-import { UserDashboardPlaceholder } from "../../features/user";
+import { UserDashboardPage, UserProfilePage } from "../../features/user";
+import { RechargePage } from "../../features/recharge";
+import { BbpsPage } from "../../features/bbps";
+import { DirectPaymentPortalPage } from "../../features/payments";
+import { TransactionHistoryPage } from "../../features/transactions";
 import { AppLayout, FeaturePlaceholderPage } from "../../components/layout";
 import { ROLES, getRoleDashboardPath } from "../../utils/constants";
 import { Loader } from "../../components/common";
@@ -15,11 +19,6 @@ import {
   Settings,
   Code,
   Activity,
-  Smartphone,
-  Zap,
-  CreditCard,
-  Receipt,
-  User as UserIcon,
 } from "lucide-react";
 
 /**
@@ -205,64 +204,12 @@ export const AppRouter = () => {
               </ProtectedRoute>
             }
           >
-            <Route path="/user/dashboard" element={<UserDashboardPlaceholder />} />
-            <Route
-              path="/user/recharge"
-              element={
-                <FeaturePlaceholderPage
-                  title="Mobile & DTH Recharge"
-                  description="Instant mobile prepaid, postpaid, and DTH recharges across all telecom circles with direct payment gateway checkout."
-                  plannedPhase="Phase 6 Consumer Services"
-                  badgeText="Direct Pay"
-                  icon={Smartphone}
-                />
-              }
-            />
-            <Route
-              path="/user/bbps"
-              element={
-                <FeaturePlaceholderPage
-                  title="Utility Bill Payments"
-                  description="Pay electricity, gas, water, municipal, and broadband bills via direct payment gateway without customer wallet balance."
-                  plannedPhase="Phase 6 Consumer Services"
-                  badgeText="BBPS"
-                  icon={Zap}
-                />
-              }
-            />
-            <Route
-              path="/user/payments"
-              element={
-                <FeaturePlaceholderPage
-                  title="Direct Gateway Checkout"
-                  description="Direct payment gateway integration supporting UPI, Netbanking, and Debit/Credit cards. No personal wallet is required."
-                  plannedPhase="Phase 6 Payment Integration"
-                  icon={CreditCard}
-                />
-              }
-            />
-            <Route
-              path="/user/transactions"
-              element={
-                <FeaturePlaceholderPage
-                  title="Transaction Receipts"
-                  description="Download invoices, inspect operator reference numbers, and review payment status history."
-                  plannedPhase="Phase 7 History & Receipts"
-                  icon={Receipt}
-                />
-              }
-            />
-            <Route
-              path="/user/profile"
-              element={
-                <FeaturePlaceholderPage
-                  title="My Account Profile"
-                  description="Manage personal contact details, security credentials, and communication preferences."
-                  plannedPhase="Phase 8 Account Management"
-                  icon={UserIcon}
-                />
-              }
-            />
+            <Route path="/user/dashboard" element={<UserDashboardPage />} />
+            <Route path="/user/recharge" element={<RechargePage />} />
+            <Route path="/user/bbps" element={<BbpsPage />} />
+            <Route path="/user/payments" element={<DirectPaymentPortalPage />} />
+            <Route path="/user/transactions" element={<TransactionHistoryPage />} />
+            <Route path="/user/profile" element={<UserProfilePage />} />
             <Route path="/user/*" element={<Navigate to="/user/dashboard" replace />} />
           </Route>
         </Route>
