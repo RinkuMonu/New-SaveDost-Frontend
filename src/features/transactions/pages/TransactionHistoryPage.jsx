@@ -25,7 +25,7 @@ export const TransactionHistoryPage = () => {
     setError(null);
     try {
       const res = await userService.getDashboardData();
-      const list = res.data?.recentTransactions || [];
+      const list = res.data?.recentTransactions || res.recentTransactions || [];
       setTransactions(list);
     } catch (err) {
       setError(getErrorMessage(err, "Failed to load transaction history."));

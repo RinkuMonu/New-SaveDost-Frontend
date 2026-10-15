@@ -59,15 +59,35 @@ export const bbpsService = {
 
   /**
    * Fetches live bill details from the BBPS network prior to payment.
+   * Backend contract requires: POST /bbps/fetch-bill with billerId and inputParameters.param1
    *
    * @param {Object} payload
    * @param {string} payload.billerId
-   * @param {Object} payload.inputParameters
-   * @param {string} payload.mobile
+   * @param {Object} [payload.inputParameters]
+   * @param {string} [payload.consumerNumber]
+   * @param {string} [payload.mobile]
    * @returns {Promise<{statusCode: number, data: Object, message: string}>}
    */
   async fetchBill(payload) {
-    const response = await apiClient.post("/bbps/fetch-bill", payload);
+    const consumerId =
+      payload.inputParameters?.param1 ||
+      payload.inputParameters?.consumerNumber ||
+      payload.consumerNumber ||
+      payload.biller_number ||
+      payload.number ||
+      "";
+
+    const formattedPayload = {
+      billerId: payload.billerId || payload.operatorCode || "BILLER_GENERIC",
+      biller_number: consumerId,
+      inputParameters: {
+        param1: consumerId,
+        ...(typeof payload.inputParameters === "object" ? payload.inputParameters : {}),
+      },
+      mobile: payload.mobile,
+    };
+
+    const response = await apiClient.post("/bbps/fetch-bill", formattedPayload);
     return response.data;
   },
 

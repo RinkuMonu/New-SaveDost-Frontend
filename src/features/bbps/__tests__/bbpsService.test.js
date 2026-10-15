@@ -42,7 +42,11 @@ describe("Prompt 6 - BBPS Utility Bill Service Integration", () => {
 
     expect(apiClient.post).toHaveBeenCalledWith("/bbps/fetch-bill", {
       billerId: "BSES_DELHI",
-      inputParameters: { consumerNumber: "12345678" },
+      biller_number: "12345678",
+      inputParameters: {
+        param1: "12345678",
+        consumerNumber: "12345678",
+      },
       mobile: "9876543210",
     });
     expect(result).toEqual(mockData);

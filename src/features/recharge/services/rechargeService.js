@@ -33,6 +33,7 @@ export const rechargeService = {
 
   /**
    * Performs HLR check to identify operator and circle for a mobile number.
+   * Backend contract requires: POST /sprintverify/recharge/hlrcheck with { number, type: "mobile" }
    *
    * @param {string} mobile - 10-digit mobile number
    * @returns {Promise<{statusCode: number, data: Object, message: string}>}
@@ -40,7 +41,8 @@ export const rechargeService = {
   async lookupMobile(mobile) {
     try {
       const response = await apiClient.post("/sprintverify/recharge/hlrcheck", {
-        mobile: String(mobile).trim(),
+        number: String(mobile).trim(),
+        type: "mobile",
       });
       return response.data;
     } catch (err) {
@@ -50,6 +52,7 @@ export const rechargeService = {
 
   /**
    * Fetches recharge plans for given operator and circle.
+   * Backend contract requires query params: GET /sprintverify/recharge/browseplan?op=...&circle=...
    *
    * @param {string|number} operatorCode
    * @param {string|number} circleId
@@ -58,7 +61,27 @@ export const rechargeService = {
   async getPlans(operatorCode, circleId) {
     try {
       const response = await apiClient.get("/sprintverify/recharge/browseplan", {
-        params: { operator: operatorCode, circle: circleId },
+        params: { op: operatorCode, circle: circleId },
+      });
+      return response.data;
+    } catch {
+      return { data: [] };
+    }
+  },
+
+  /**
+   * Fetches DTH recharge plans for a subscriber/account number.
+   * Backend contract requires: POST /sprintverify/recharge/dthPlan with { canumber, op }
+   *
+   * @param {string} canumber - DTH Consumer / Smartcard number
+   * @param {string|number} operatorCode - Operator code or name
+   * @returns {Promise<{statusCode: number, data: Object, message: string}>}
+   */
+  async getDthPlans(canumber, operatorCode) {
+    try {
+      const response = await apiClient.post("/sprintverify/recharge/dthPlan", {
+        canumber: String(canumber).trim(),
+        op: operatorCode,
       });
       return response.data;
     } catch {
@@ -72,19 +95,28 @@ export const rechargeService = {
    *
    * @param {Object} data
    * @param {string} data.mobile
+   * @param {string} [data.canumber]
    * @param {string} data.operator
    * @param {number} data.amount
+   * @param {string} [data.category] - "MOBILE" | "DTH"
    * @param {string} [data.planDescription]
    * @returns {Promise<{statusCode: number, data: Object, message: string}>}
    */
   async createRechargeOrder(data) {
+    const isDth =
+      data.category?.toUpperCase() === "DTH" ||
+      data.rechargeType?.toLowerCase() === "dth";
+    const targetNumber = String(data.canumber || data.mobile).trim();
+
     const payload = {
-      service_code: "MOBILE_RECHARGE",
+      service_code: isDth ? "DTH_RECHARGE" : "MOBILE_RECHARGE",
       amount: Number(data.amount),
       payload: {
-        mobile: String(data.mobile).trim(),
+        mobile: targetNumber,
+        canumber: targetNumber,
         operator: data.operator,
         circle: data.circle || "Default",
+        category: isDth ? "DTH" : "MOBILE",
         planDescription: data.planDescription || `Recharge ₹${data.amount}`,
       },
     };

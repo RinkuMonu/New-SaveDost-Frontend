@@ -49,16 +49,25 @@ export const userService = {
 
   /**
    * Updates user password or MPIN.
+   * Aligned with backend contract: POST /auth/change-password
+   * Backend requires: { type: "password" | "mpin", newValue: string, oldPassword?: string }
    *
    * @param {Object} payload
    * @param {string} [payload.oldPassword]
    * @param {string} [payload.newPassword]
    * @param {string} [payload.oldMpin]
    * @param {string} [payload.newMpin]
+   * @param {string} [payload.type]
+   * @param {string} [payload.newValue]
    * @returns {Promise<{statusCode: number, message: string}>}
    */
   async changePassword(payload) {
-    const response = await apiClient.post("/auth/change-password", payload);
+    const formattedPayload = {
+      type: payload.type || (payload.newMpin ? "mpin" : "password"),
+      newValue: payload.newValue || payload.newPassword || payload.newMpin,
+      ...(payload.oldPassword ? { oldPassword: payload.oldPassword } : {}),
+    };
+    const response = await apiClient.post("/auth/change-password", formattedPayload);
     return response.data;
   },
 };

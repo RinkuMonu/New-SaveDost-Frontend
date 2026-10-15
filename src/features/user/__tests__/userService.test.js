@@ -39,7 +39,7 @@ describe("Prompt 6 - User Dashboard and Profile Service", () => {
     expect(result).toEqual(mockData);
   });
 
-  test("changePassword dispatches POST to /auth/change-password", async () => {
+  test("changePassword dispatches POST to /auth/change-password with type and newValue", async () => {
     const mockData = { statusCode: 200, message: "Password updated" };
     apiClient.post.mockResolvedValueOnce({ data: mockData });
 
@@ -49,8 +49,9 @@ describe("Prompt 6 - User Dashboard and Profile Service", () => {
     });
 
     expect(apiClient.post).toHaveBeenCalledWith("/auth/change-password", {
+      type: "password",
+      newValue: "NewPass@123",
       oldPassword: "OldPass@123",
-      newPassword: "NewPass@123",
     });
     expect(result).toEqual(mockData);
   });
