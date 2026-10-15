@@ -60,7 +60,7 @@ export const BbpsPage = () => {
       const res = await bbpsService.fetchBill({
         billerId: "BILLER_GENERIC",
         inputParameters: { consumerNumber: consumerNumber.trim() },
-        mobile: customerMobile || "9876543210",
+        mobile: (customerMobile || "").trim(),
       });
 
       const billData = res.data || {

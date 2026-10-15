@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Phone, Shield, Lock, Key, CheckCircle, Eye, EyeOff } from "lucide-react";
 import Swal from "sweetalert2";
@@ -29,6 +29,29 @@ export const LoginPage = () => {
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [youtube, setYoutube] = useState(false);
+
+  // Ensure form fields start completely empty on mount and reload
+  useEffect(() => {
+    setFormData({
+      mobileNumber: "",
+      password: "",
+    });
+    setOtp("");
+    setShowOtpField(false);
+    setShowPassword(false);
+  }, []);
+
+  const handleMobileChange = (e) => {
+    let val = e.target.value.replace(/\D/g, "");
+    if (val.length > 10) val = val.slice(0, 10);
+    if (val.length === 1 && !/[6-9]/.test(val)) val = "";
+    setFormData((prev) => ({ ...prev, mobileNumber: val }));
+  };
+
+  const handlePasswordChange = (e) => {
+    const val = e.target.value;
+    setFormData((prev) => ({ ...prev, password: val }));
+  };
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -224,7 +247,7 @@ export const LoginPage = () => {
 
           {/* Form */}
           <div className="space-y-5">
-            <form onSubmit={handleLogin}>
+            <form onSubmit={handleLogin} autoComplete="off">
               <div className="space-y-4">
                 {/* Mobile Number Field */}
                 <div className="space-y-1">
@@ -245,21 +268,13 @@ export const LoginPage = () => {
                         id="mobileNumber"
                         name="mobileNumber"
                         value={formData.mobileNumber}
-                        onChange={handleChange}
-                        onInput={(e) => {
-                          let val = e.target.value.replace(/\D/g, "");
-                          if (val.length > 10) val = val.slice(0, 10);
-                          if (val.length === 1 && !/[6-9]/.test(val)) val = "";
-                          e.target.value = val;
-                          handleChange({
-                            target: { name: "mobileNumber", value: val },
-                          });
-                        }}
+                        onChange={handleMobileChange}
                         placeholder="Enter Mobile Number"
                         className="w-full border-0 p-0 focus:outline-none text-sm sm:text-base text-gray-800 bg-transparent"
                         required
                         inputMode="numeric"
                         maxLength={10}
+                        autoComplete="off"
                         disabled={showOtpField}
                       />
                     </div>
@@ -283,10 +298,12 @@ export const LoginPage = () => {
                           id="password"
                           name="password"
                           value={formData.password}
-                          onChange={handleChange}
+                          onChange={handlePasswordChange}
+                          autoComplete="current-password"
                           placeholder="Enter Password"
                           className="w-full border-0 p-0 focus:outline-none text-sm sm:text-base text-gray-800 bg-transparent"
                           disabled={showOtpField}
+                          required={!showOtpField}
                         />
                         <button
                           type="button"

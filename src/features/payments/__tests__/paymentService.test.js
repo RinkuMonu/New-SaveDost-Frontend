@@ -93,4 +93,49 @@ describe("Prompt 6 - Direct Payment Gateway Service Integration", () => {
 
     expect(verifyRes.status).toBe("Success");
   });
+
+  test("correctly parses Pending and Failed payment statuses from authoritative responses", async () => {
+    // Test Pending State
+    apiClient.get.mockResolvedValueOnce({
+      data: {
+        orderId: "PAY_PENDING_1",
+        status: "Pending",
+        amount: 250,
+      },
+    });
+
+    const pendingResult = await paymentService.getPaymentStatus("PAY_PENDING_1");
+    expect(pendingResult.status).toBe("Pending");
+
+    // Test Failed State
+    apiClient.get.mockResolvedValueOnce({
+      data: {
+        orderId: "PAY_FAILED_1",
+        status: "Failed",
+        reason: "Insufficient funds / Bank timeout",
+      },
+    });
+
+    const failedResult = await paymentService.getPaymentStatus("PAY_FAILED_1");
+    expect(failedResult.status).toBe("Failed");
+  });
+
+  test("handles API errors properly during payment verification rejection", async () => {
+    apiClient.post.mockRejectedValueOnce({
+      response: {
+        status: 400,
+        data: { message: "Invalid payment checksum signature" },
+      },
+    });
+
+    await expect(
+      paymentService.verifyPayment({
+        orderId: "PAY_INVALID",
+        responseCode: "99",
+        checksum: "invalid_hash",
+      })
+    ).rejects.toMatchObject({
+      response: { status: 400 },
+    });
+  });
 });

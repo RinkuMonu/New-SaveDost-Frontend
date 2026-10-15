@@ -27,4 +27,13 @@ describe("Phase 5 - Role-Based Access and Safeguards", () => {
     const userRole = ROLES.USER;
     expect(userRole).not.toBe(ROLES.API_PARTNER);
   });
+
+  test("handles lowercase role inputs gracefully via case-insensitive normalization", () => {
+    expect(getRoleDashboardPath("admin")).toBe("/admin/dashboard");
+    expect(getRoleDashboardPath("api_partner")).toBe("/api-partner/dashboard");
+    expect(getRoleDashboardPath("user")).toBe("/user/dashboard");
+    expect(getRoleDashboardPath("")).toBe("/login");
+    expect(getRoleDashboardPath(undefined)).toBe("/login");
+  });
 });
+
