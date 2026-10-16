@@ -299,7 +299,7 @@ export const LoginPage = () => {
                           name="password"
                           value={formData.password}
                           onChange={handlePasswordChange}
-                          autoComplete="current-password"
+                          autoComplete="off"
                           placeholder="Enter Password"
                           className="w-full border-0 p-0 focus:outline-none text-sm sm:text-base text-gray-800 bg-transparent"
                           disabled={showOtpField}
