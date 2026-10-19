@@ -290,7 +290,7 @@ export const AdminDashboardPage = () => {
         </Link>
 
         <Link
-          to="/admin/kyc"
+          to="/admin/users?kyc=Pending"
           className="p-3.5 rounded-2xl bg-white border border-[#E2EEF5] hover:border-brand-blue/40 shadow-xs flex items-center space-x-3 transition-all hover:shadow-sm group"
         >
           <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   Users,
   Search,
@@ -39,6 +40,7 @@ import { getErrorMessage } from "../../../utils/apiError";
  * toggle account status and reset passwords for platform users.
  */
 export const UserListPage = () => {
+  const [searchParams] = useSearchParams();
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -50,12 +52,19 @@ export const UserListPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
 
-  // Filters state
+  // Filters state (synced with query params if provided)
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [selectedRole, setSelectedRole] = useState("ALL");
+  const [selectedRole, setSelectedRole] = useState(() => searchParams.get("role") || "ALL");
   const [selectedStatus, setSelectedStatus] = useState("ALL");
-  const [selectedKyc, setSelectedKyc] = useState("ALL");
+  const [selectedKyc, setSelectedKyc] = useState(() => searchParams.get("kyc") || "ALL");
+
+  useEffect(() => {
+    const roleParam = searchParams.get("role");
+    if (roleParam) setSelectedRole(roleParam);
+    const kycParam = searchParams.get("kyc");
+    if (kycParam) setSelectedKyc(kycParam);
+  }, [searchParams]);
 
   // Modals state
   const [selectedUser, setSelectedUser] = useState(null);

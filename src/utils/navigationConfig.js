@@ -28,13 +28,8 @@ export const NAVIGATION_CONFIG = Object.freeze({
           subItems: [
             {
               id: "admin-users-all",
-              label: "Active All Users",
+              label: "Active Users",
               path: "/admin/users",
-            },
-            {
-              id: "admin-users-customers",
-              label: "Active Customers",
-              path: "/admin/users?role=USER",
             },
             {
               id: "admin-users-partners",
@@ -63,19 +58,6 @@ export const NAVIGATION_CONFIG = Object.freeze({
               id: "admin-leads-list",
               label: "Lead Management",
               path: "/admin/leads",
-            },
-          ],
-        },
-        {
-          id: "admin-kyc",
-          label: "KYC Requested",
-          path: "/admin/kyc",
-          icon: "Fingerprint",
-          subItems: [
-            {
-              id: "admin-kyc-all",
-              label: "KYC Requested",
-              path: "/admin/kyc",
             },
           ],
         },
