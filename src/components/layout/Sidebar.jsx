@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -84,6 +84,37 @@ export const Sidebar = ({
 
   const navGroups = getNavigationForRole(role);
 
+  const isItemActive = (item) => {
+    const currentFullPath = location.pathname + (location.search || "");
+    if (item.path && location.pathname === item.path && (!item.subItems || item.subItems.length === 0)) {
+      return true;
+    }
+    if (item.subItems) {
+      return item.subItems.some((sub) => {
+        if (sub.path.includes("?")) {
+          return currentFullPath === sub.path;
+        }
+        return location.pathname === sub.path;
+      });
+    }
+    return location.pathname === item.path;
+  };
+
+  // Auto-expand any group that contains the current active route
+  useEffect(() => {
+    navGroups.forEach((group) => {
+      group.items.forEach((item) => {
+        if (isItemActive(item)) {
+          setExpandedGroups((prev) => ({
+            ...prev,
+            [item.id]: true,
+          }));
+        }
+      });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname, location.search]);
+
   const toggleGroup = (itemId) => {
     setExpandedGroups((prev) => ({
       ...prev,
@@ -91,23 +122,18 @@ export const Sidebar = ({
     }));
   };
 
+  const handleAccordionClick = (item) => {
+    toggleGroup(item.id);
+    if (item.path && location.pathname !== item.path) {
+      navigate(item.path);
+      if (onCloseMobile) onCloseMobile();
+    }
+  };
+
   const handleLogout = async () => {
     if (onCloseMobile) onCloseMobile();
     await logout();
     navigate("/login");
-  };
-
-  const isItemActive = (item) => {
-    if (location.pathname === item.path) return true;
-    if (item.subItems) {
-      return item.subItems.some(
-        (sub) =>
-          location.pathname === sub.path ||
-          (sub.path.includes("?") &&
-            location.pathname + location.search === sub.path)
-      );
-    }
-    return false;
   };
 
   const displayName = user?.name || user?.mobile || user?.mobileNumber || "Finunique Admin";
@@ -231,7 +257,7 @@ export const Sidebar = ({
                       <div>
                         {/* Expandable Accordion Menu Item */}
                         <div
-                          onClick={() => toggleGroup(item.id)}
+                          onClick={() => handleAccordionClick(item)}
                           className={`flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-150 group ${
                             active
                               ? "bg-[#018EDE] text-white shadow-sm font-semibold"
@@ -260,11 +286,20 @@ export const Sidebar = ({
 
                           {/* Right Chevron Arrow */}
                           {(!isDesktopCollapsed || isMobileOpen) && (
-                            <ChevronLeft
-                              className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${
-                                isExpanded ? "-rotate-90" : ""
-                              } ${active ? "text-white" : "text-[#018EDE]"}`}
-                            />
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleGroup(item.id);
+                              }}
+                              className="p-1 hover:bg-black/5 rounded-lg transition-colors focus:outline-none"
+                            >
+                              <ChevronLeft
+                                className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${
+                                  isExpanded ? "-rotate-90" : ""
+                                } ${active ? "text-white" : "text-[#018EDE]"}`}
+                              />
+                            </button>
                           )}
                         </div>
 
@@ -272,10 +307,10 @@ export const Sidebar = ({
                         {isExpanded && (!isDesktopCollapsed || isMobileOpen) && (
                           <div className="ml-7 pl-4 border-l-2 border-[#018EDE] space-y-1.5 py-1.5">
                             {item.subItems.map((sub) => {
-                              const isSubActive =
-                                location.pathname === sub.path ||
-                                (sub.path.includes("?") &&
-                                  location.pathname + location.search === sub.path);
+                              const currentFullPath = location.pathname + (location.search || "");
+                              const isSubActive = sub.path.includes("?")
+                                ? currentFullPath === sub.path
+                                : location.pathname === sub.path && (!location.search || location.search === "");
                               return (
                                 <Link
                                   key={sub.id}

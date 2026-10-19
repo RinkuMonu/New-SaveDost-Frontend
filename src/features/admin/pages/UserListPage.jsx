@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useLocation } from "react-router-dom";
 import {
   Users,
   Search,
@@ -41,6 +41,7 @@ import { getErrorMessage } from "../../../utils/apiError";
  */
 export const UserListPage = () => {
   const [searchParams] = useSearchParams();
+  const location = useLocation();
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -60,10 +61,13 @@ export const UserListPage = () => {
   const [selectedKyc, setSelectedKyc] = useState(() => searchParams.get("kyc") || "ALL");
 
   useEffect(() => {
-    const roleParam = searchParams.get("role");
-    if (roleParam) setSelectedRole(roleParam);
-    const kycParam = searchParams.get("kyc");
-    if (kycParam) setSelectedKyc(kycParam);
+    const roleParam = searchParams.get("role") || "ALL";
+    setSelectedRole(roleParam);
+    const kycParam = searchParams.get("kyc") || "ALL";
+    setSelectedKyc(kycParam);
+    const statusParam = searchParams.get("status") || "ALL";
+    setSelectedStatus(statusParam);
+    setCurrentPage(1);
   }, [searchParams]);
 
   // Modals state
@@ -331,10 +335,33 @@ export const UserListPage = () => {
     },
   ], []);
 
+  const isLeads = location.pathname.includes("/admin/leads");
+  const isActionRequests = location.pathname.includes("action-requests");
+  const isAdminRole = selectedRole === "ADMIN";
+  const isKycFilter = selectedKyc !== "ALL";
+
+  const pageTitle = isLeads
+    ? "Lead Management"
+    : isActionRequests
+    ? "Action Requests"
+    : isAdminRole
+    ? "Active Administrators"
+    : isKycFilter
+    ? `KYC Requests (${selectedKyc})`
+    : "Active Users";
+
+  const pageSubtitle = isLeads
+    ? "Track and manage customer onboarding inquiries, leads, and sales requests"
+    : isActionRequests
+    ? "Review and process user account modification and status escalation requests"
+    : isAdminRole
+    ? "Management of platform administrators, team permissions, and security roles"
+    : "Comprehensive administration of active users, customer profiles, and account standing";
+
   return (
     <PageContainer
-      title="User Management"
-      subtitle="Comprehensive administration of retail customers, API partners, and system privileges"
+      title={pageTitle}
+      subtitle={pageSubtitle}
       actions={
         <div className="flex items-center space-x-2 flex-wrap gap-y-1">
           <button

@@ -103,7 +103,9 @@ export const AppRouter = () => {
             <Route path="/admin/users" element={<UserListPage />} />
             <Route path="/admin/users/*" element={<UserListPage />} />
             <Route path="/admin/leads" element={<UserListPage />} />
+            <Route path="/admin/leads/*" element={<UserListPage />} />
             <Route path="/admin/kyc" element={<UserListPage />} />
+            <Route path="/admin/kyc/*" element={<UserListPage />} />
             <Route path="/admin/api-partners" element={<PartnerManagementPage />} />
             <Route path="/admin/api-partners/*" element={<PartnerManagementPage />} />
             <Route path="/admin/permissions" element={<SystemSettingsPage />} />
@@ -115,12 +117,17 @@ export const AppRouter = () => {
             <Route path="/admin/reports" element={<ReportsPage />} />
             <Route path="/admin/reports/*" element={<ReportsPage />} />
             <Route path="/admin/settings" element={<SystemSettingsPage />} />
+            <Route path="/admin/settings/*" element={<SystemSettingsPage />} />
             <Route path="/admin/support" element={<ReportsPage />} />
             <Route path="/admin/support/*" element={<ReportsPage />} />
             <Route path="/admin/callbacks" element={<UserListPage />} />
+            <Route path="/admin/callbacks/*" element={<UserListPage />} />
             <Route path="/admin/news" element={<SystemSettingsPage />} />
+            <Route path="/admin/news/*" element={<SystemSettingsPage />} />
             <Route path="/admin/banners" element={<SystemSettingsPage />} />
+            <Route path="/admin/banners/*" element={<SystemSettingsPage />} />
             <Route path="/admin/blogs" element={<SystemSettingsPage />} />
+            <Route path="/admin/blogs/*" element={<SystemSettingsPage />} />
             <Route path="/admin/*" element={<Navigate to="/admin/dashboard" replace />} />
           </Route>
 
