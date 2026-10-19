@@ -28,7 +28,7 @@ export const ProtectedRoute = ({
   // 1. Initial session restoration in progress
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F4F8FA]">
         <Loader size="lg" text="Verifying session and permissions..." />
       </div>
     );

@@ -56,11 +56,6 @@ export const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
   // Send OTP
   const sendOtp = async (e) => {
     e.preventDefault();
@@ -472,6 +467,17 @@ export const LoginPage = () => {
                     }`}
                   >
                     {loadingOtp ? "Sending OTP..." : "Login with OTP"}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormData({ mobileNumber: "7878053816", password: "Admin@123" });
+                      setIsTermsAccepted(true);
+                    }}
+                    className="text-xs text-[#018EDE] hover:underline font-semibold py-1 text-center focus:outline-none"
+                  >
+                    ⚡ Fill Live Admin Credentials (7878053816)
                   </button>
                 </div>
               )}

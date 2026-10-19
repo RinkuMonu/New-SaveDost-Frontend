@@ -3,7 +3,15 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom
 import { useAuth } from "../providers/AuthContext";
 import ProtectedRoute from "./ProtectedRoute";
 import { LoginPage, RegisterPage, UnauthorizedPage } from "../../features/auth";
-import { AdminDashboardPlaceholder, UserListPage } from "../../features/admin";
+import {
+  AdminDashboardPage,
+  UserListPage,
+  PartnerManagementPage,
+  TransactionManagementPage,
+  ServiceProvidersPage,
+  ReportsPage,
+  SystemSettingsPage,
+} from "../../features/admin";
 import { ApiPartnerDashboardPlaceholder, PartnerWalletPage } from "../../features/api-partner";
 import { UserDashboardPage, UserProfilePage } from "../../features/user";
 import { RechargePage } from "../../features/recharge";
@@ -14,9 +22,7 @@ import { AppLayout, FeaturePlaceholderPage } from "../../components/layout";
 import { ROLES, getRoleDashboardPath } from "../../utils/constants";
 import { Loader } from "../../components/common";
 import {
-  Server,
   FileText,
-  Settings,
   Code,
   Activity,
 } from "lucide-react";
@@ -30,7 +36,7 @@ const RootRedirect = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F5FBFF] dark:bg-slate-900">
+      <div className="min-h-screen flex items-center justify-center bg-[#F4F8FA]">
         <Loader size="lg" text="Loading SaveDost..." />
       </div>
     );
@@ -93,56 +99,28 @@ export const AppRouter = () => {
               </ProtectedRoute>
             }
           >
-            <Route path="/admin/dashboard" element={<AdminDashboardPlaceholder />} />
+            <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
             <Route path="/admin/users" element={<UserListPage />} />
-            <Route
-              path="/admin/services"
-              element={
-                <FeaturePlaceholderPage
-                  title="Service Providers"
-                  description="Configure and monitor external integrations including AeronPay, Bharat BillPay, and payment gateways."
-                  plannedPhase="Phase 6 Services Integration"
-                  icon={Server}
-                />
-              }
-            />
-            <Route
-              path="/admin/reports"
-              element={<Navigate to="/admin/reports/transactions" replace />}
-            />
-            <Route
-              path="/admin/reports/transactions"
-              element={
-                <FeaturePlaceholderPage
-                  title="All Transactions"
-                  description="Platform-wide ledger of utility bill payments, recharges, and payment gateway checkout records."
-                  plannedPhase="Phase 7 Reports & Audits"
-                  icon={FileText}
-                />
-              }
-            />
-            <Route
-              path="/admin/reports/settlement"
-              element={
-                <FeaturePlaceholderPage
-                  title="Settlement Audits"
-                  description="Financial reconciliation logs, banking settlement batches, and provider commissions."
-                  plannedPhase="Phase 7 Reports & Audits"
-                  icon={FileText}
-                />
-              }
-            />
-            <Route
-              path="/admin/settings"
-              element={
-                <FeaturePlaceholderPage
-                  title="System Settings"
-                  description="Platform configurations, API rate-limiting rules, maintenance toggles, and security policies."
-                  plannedPhase="Phase 8 System Settings"
-                  icon={Settings}
-                />
-              }
-            />
+            <Route path="/admin/users/*" element={<UserListPage />} />
+            <Route path="/admin/leads" element={<UserListPage />} />
+            <Route path="/admin/kyc" element={<UserListPage />} />
+            <Route path="/admin/api-partners" element={<PartnerManagementPage />} />
+            <Route path="/admin/api-partners/*" element={<PartnerManagementPage />} />
+            <Route path="/admin/permissions" element={<SystemSettingsPage />} />
+            <Route path="/admin/permissions/*" element={<SystemSettingsPage />} />
+            <Route path="/admin/services" element={<ServiceProvidersPage />} />
+            <Route path="/admin/services/*" element={<ServiceProvidersPage />} />
+            <Route path="/admin/transactions" element={<TransactionManagementPage />} />
+            <Route path="/admin/transactions/*" element={<TransactionManagementPage />} />
+            <Route path="/admin/reports" element={<ReportsPage />} />
+            <Route path="/admin/reports/*" element={<ReportsPage />} />
+            <Route path="/admin/settings" element={<SystemSettingsPage />} />
+            <Route path="/admin/support" element={<ReportsPage />} />
+            <Route path="/admin/support/*" element={<ReportsPage />} />
+            <Route path="/admin/callbacks" element={<UserListPage />} />
+            <Route path="/admin/news" element={<SystemSettingsPage />} />
+            <Route path="/admin/banners" element={<SystemSettingsPage />} />
+            <Route path="/admin/blogs" element={<SystemSettingsPage />} />
             <Route path="/admin/*" element={<Navigate to="/admin/dashboard" replace />} />
           </Route>
 

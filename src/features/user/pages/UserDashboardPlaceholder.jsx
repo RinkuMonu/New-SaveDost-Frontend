@@ -18,7 +18,7 @@ export const UserDashboardPlaceholder = () => {
   return (
     <div className="space-y-6">
       {/* Banner Notice */}
-      <div className="p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-2xl flex items-start space-x-3 text-emerald-900 dark:text-emerald-200 text-sm">
+      <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-start space-x-3 text-emerald-900 text-sm">
         <CheckCircle2 className="w-5 h-5 flex-shrink-0 text-emerald-600 mt-0.5" />
         <div>
           <strong className="font-semibold">Direct Payment Gateway Architecture Active:</strong> You are logged in as a <strong>USER</strong>. In accordance with SaveDost architecture, all consumer utility services process seamlessly via direct checkout (UPI, Netbanking, Cards) without any personal wallet balance requirement.
@@ -26,18 +26,18 @@ export const UserDashboardPlaceholder = () => {
       </div>
 
       {/* Customer Account Profile Card */}
-      <Card title="Consumer Account Profile" padding="md" className="border-[#E2EEF5] dark:border-slate-800 shadow-sm">
+      <Card title="Consumer Account Profile" padding="md" className="border-[#E2EEF5] shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
           <div>
-            <span className="text-xs text-slate-400 uppercase tracking-wider block">Customer Name</span>
-            <span className="font-bold text-slate-900 dark:text-white text-base">{user?.name || "Customer User"}</span>
+            <span className="text-xs text-slate-500 uppercase tracking-wider block">Customer Name</span>
+            <span className="font-bold text-slate-900 text-base">{user?.name || "Customer User"}</span>
           </div>
           <div>
-            <span className="text-xs text-slate-400 uppercase tracking-wider block">Registered Mobile</span>
-            <span className="font-semibold text-slate-900 dark:text-white">{user?.mobile || user?.mobileNumber || "N/A"}</span>
+            <span className="text-xs text-slate-500 uppercase tracking-wider block">Registered Mobile</span>
+            <span className="font-semibold text-slate-900">{user?.mobile || user?.mobileNumber || "N/A"}</span>
           </div>
           <div>
-            <span className="text-xs text-slate-400 uppercase tracking-wider block">Payment Architecture</span>
+            <span className="text-xs text-slate-500 uppercase tracking-wider block">Payment Architecture</span>
             <div className="mt-0.5">
               <Badge variant="success" size="sm">Direct Gateway Checkout</Badge>
             </div>
@@ -47,46 +47,46 @@ export const UserDashboardPlaceholder = () => {
 
       {/* Quick Services Preview Bar */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-[#E2EEF5] dark:border-slate-700/60 shadow-sm">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
+        <div className="p-4 rounded-2xl bg-white border border-[#E2EEF5] shadow-sm">
+          <div className="flex items-center justify-between text-slate-500 text-xs font-semibold">
             <span>Mobile Recharge</span>
             <Smartphone className="w-4 h-4 text-brand-blue" />
           </div>
-          <p className="text-2xl font-black text-slate-900 dark:text-white mt-2">Instant</p>
+          <p className="text-2xl font-black text-slate-900 mt-2">Instant</p>
           <span className="text-[11px] text-brand-blue font-semibold mt-1 inline-flex items-center">
             All Telecom Circles
           </span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-[#E2EEF5] dark:border-slate-700/60 shadow-sm">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
+        <div className="p-4 rounded-2xl bg-white border border-[#E2EEF5] shadow-sm">
+          <div className="flex items-center justify-between text-slate-500 text-xs font-semibold">
             <span>BBPS Bill Pay</span>
             <Zap className="w-4 h-4 text-amber-500" />
           </div>
-          <p className="text-2xl font-black text-slate-900 dark:text-white mt-2">Verified</p>
+          <p className="text-2xl font-black text-slate-900 mt-2">Verified</p>
           <span className="text-[11px] text-amber-600 font-semibold mt-1 inline-flex items-center">
             Bharat BillPay Network
           </span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-[#E2EEF5] dark:border-slate-700/60 shadow-sm">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
+        <div className="p-4 rounded-2xl bg-white border border-[#E2EEF5] shadow-sm">
+          <div className="flex items-center justify-between text-slate-500 text-xs font-semibold">
             <span>Payment Modes</span>
             <CreditCard className="w-4 h-4 text-emerald-600" />
           </div>
-          <p className="text-2xl font-black text-slate-900 dark:text-white mt-2">UPI & Cards</p>
+          <p className="text-2xl font-black text-slate-900 mt-2">UPI & Cards</p>
           <span className="text-[11px] text-emerald-600 font-semibold mt-1 inline-flex items-center">
             Zero Wallet Hassles
           </span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white dark:bg-slate-800 border border-[#E2EEF5] dark:border-slate-700/60 shadow-sm">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-semibold">
+        <div className="p-4 rounded-2xl bg-white border border-[#E2EEF5] shadow-sm">
+          <div className="flex items-center justify-between text-slate-500 text-xs font-semibold">
             <span>Account Security</span>
             <ShieldCheck className="w-4 h-4 text-brand-blue" />
           </div>
           <p className="text-2xl font-black text-brand-blue mt-2">Protected</p>
-          <span className="text-[11px] text-slate-400 mt-1 inline-block">
+          <span className="text-[11px] text-slate-500 mt-1 inline-block">
             Role: {role}
           </span>
         </div>
@@ -94,14 +94,14 @@ export const UserDashboardPlaceholder = () => {
 
       {/* Consumer Services Navigation Cards */}
       <div>
-        <h2 className="text-sm font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3">
+        <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-3">
           Available Utility Services
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="hover:shadow-md transition-shadow border-[#E2EEF5] dark:border-slate-700">
+          <Card className="hover:shadow-md transition-shadow border-[#E2EEF5]">
             <div className="flex items-center space-x-3 mb-2 text-brand-blue">
               <Smartphone className="w-6 h-6" />
-              <h3 className="font-bold text-slate-900 dark:text-white text-sm">Mobile & DTH Recharge</h3>
+              <h3 className="font-bold text-slate-900 text-sm">Mobile & DTH Recharge</h3>
             </div>
             <p className="text-xs text-slate-500 mb-4 leading-relaxed">
               Prepaid mobile, postpaid bills, and DTH subscriptions with instant operator receipt generation.
@@ -113,10 +113,10 @@ export const UserDashboardPlaceholder = () => {
             </Link>
           </Card>
 
-          <Card className="hover:shadow-md transition-shadow border-[#E2EEF5] dark:border-slate-700">
+          <Card className="hover:shadow-md transition-shadow border-[#E2EEF5]">
             <div className="flex items-center space-x-3 mb-2 text-amber-500">
               <Zap className="w-6 h-6" />
-              <h3 className="font-bold text-slate-900 dark:text-white text-sm">BBPS Utility Bills</h3>
+              <h3 className="font-bold text-slate-900 text-sm">BBPS Utility Bills</h3>
             </div>
             <p className="text-xs text-slate-500 mb-4 leading-relaxed">
               Pay electricity, water, piped gas, broadband, and municipal taxes via Bharat BillPay.
@@ -128,10 +128,10 @@ export const UserDashboardPlaceholder = () => {
             </Link>
           </Card>
 
-          <Card className="hover:shadow-md transition-shadow border-[#E2EEF5] dark:border-slate-700">
+          <Card className="hover:shadow-md transition-shadow border-[#E2EEF5]">
             <div className="flex items-center space-x-3 mb-2 text-emerald-600">
               <CreditCard className="w-6 h-6" />
-              <h3 className="font-bold text-slate-900 dark:text-white text-sm">Direct Checkout</h3>
+              <h3 className="font-bold text-slate-900 text-sm">Direct Checkout</h3>
             </div>
             <p className="text-xs text-slate-500 mb-4 leading-relaxed">
               Integrated payment gateway supporting Google Pay, PhonePe, Paytm, and Netbanking.
@@ -143,10 +143,10 @@ export const UserDashboardPlaceholder = () => {
             </Link>
           </Card>
 
-          <Card className="hover:shadow-md transition-shadow border-[#E2EEF5] dark:border-slate-700">
+          <Card className="hover:shadow-md transition-shadow border-[#E2EEF5]">
             <div className="flex items-center space-x-3 mb-2 text-purple-600">
               <Receipt className="w-6 h-6" />
-              <h3 className="font-bold text-slate-900 dark:text-white text-sm">Receipts & History</h3>
+              <h3 className="font-bold text-slate-900 text-sm">Receipts & History</h3>
             </div>
             <p className="text-xs text-slate-500 mb-4 leading-relaxed">
               View transaction logs, check operator reference IDs, and download payment invoices.

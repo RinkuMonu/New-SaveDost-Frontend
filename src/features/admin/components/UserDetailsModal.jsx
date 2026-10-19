@@ -85,13 +85,13 @@ export const UserDetailsModal = ({
     >
       <div className="space-y-6">
         {/* Profile Header Summary */}
-        <div className="flex items-center space-x-4 p-4 rounded-2xl bg-[#F5FBFF] dark:bg-slate-800/60 border border-[#E2EEF5] dark:border-slate-700">
+        <div className="flex items-center space-x-4 p-4 rounded-2xl bg-[#F5FBFF] border border-[#E2EEF5]">
           <div className="w-14 h-14 rounded-2xl bg-brand-blue text-white flex items-center justify-center font-bold text-xl shadow-md shadow-brand-blue/20 flex-shrink-0">
             {(user.name?.charAt(0) || "U").toUpperCase()}
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center space-x-2">
-              <h4 className="text-base font-bold text-slate-900 dark:text-white truncate">
+              <h4 className="text-base font-bold text-slate-900 truncate">
                 {user.name || "Customer User"}
               </h4>
               <Badge variant={getRoleVariant(user.role)} size="sm">
@@ -99,7 +99,7 @@ export const UserDetailsModal = ({
               </Badge>
             </div>
             <p className="text-xs text-slate-500 truncate mt-0.5">
-              User ID: <span className="font-mono text-slate-700 dark:text-slate-300">{user._id || user.id || "N/A"}</span>
+              User ID: <span className="font-mono text-slate-700">{user._id || user.id || "N/A"}</span>
             </p>
           </div>
           <div className="text-right">
@@ -125,28 +125,28 @@ export const UserDetailsModal = ({
 
         {/* Detailed Fields Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
-            <div className="flex items-center space-x-2 text-slate-400 text-xs mb-1">
+          <div className="p-3.5 rounded-xl border border-slate-200 bg-white">
+            <div className="flex items-center space-x-2 text-slate-500 text-xs mb-1">
               <Phone className="w-3.5 h-3.5 text-brand-blue" />
               <span>Mobile Number</span>
             </div>
-            <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+            <p className="text-sm font-semibold text-slate-800">
               {user.mobile || user.mobileNumber || "N/A"}
             </p>
           </div>
 
-          <div className="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
-            <div className="flex items-center space-x-2 text-slate-400 text-xs mb-1">
+          <div className="p-3.5 rounded-xl border border-slate-200 bg-white">
+            <div className="flex items-center space-x-2 text-slate-500 text-xs mb-1">
               <Mail className="w-3.5 h-3.5 text-brand-blue" />
               <span>Email Address</span>
             </div>
-            <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate">
+            <p className="text-sm font-semibold text-slate-800 truncate">
               {user.email || "N/A"}
             </p>
           </div>
 
-          <div className="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
-            <div className="flex items-center space-x-2 text-slate-400 text-xs mb-1">
+          <div className="p-3.5 rounded-xl border border-slate-200 bg-white">
+            <div className="flex items-center space-x-2 text-slate-500 text-xs mb-1">
               <Shield className="w-3.5 h-3.5 text-amber-500" />
               <span>KYC Status</span>
             </div>
@@ -165,12 +165,12 @@ export const UserDetailsModal = ({
             </div>
           </div>
 
-          <div className="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900">
-            <div className="flex items-center space-x-2 text-slate-400 text-xs mb-1">
+          <div className="p-3.5 rounded-xl border border-slate-200 bg-white">
+            <div className="flex items-center space-x-2 text-slate-500 text-xs mb-1">
               <Calendar className="w-3.5 h-3.5 text-slate-400" />
               <span>Registration Date</span>
             </div>
-            <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+            <p className="text-sm font-semibold text-slate-800">
               {user.createdAt
                 ? new Date(user.createdAt).toLocaleDateString("en-IN", {
                     day: "numeric",
@@ -183,8 +183,8 @@ export const UserDetailsModal = ({
         </div>
 
         {/* Password Reset Trigger */}
-        <div className="p-3 rounded-xl bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40 flex items-center justify-between text-xs">
-          <div className="flex items-center space-x-2 text-amber-900 dark:text-amber-200">
+        <div className="p-3 rounded-xl bg-amber-50/60 border border-amber-200 flex items-center justify-between text-xs">
+          <div className="flex items-center space-x-2 text-amber-900">
             <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0" />
             <span>Administrative credential override available if customer lost access</span>
           </div>
@@ -194,7 +194,7 @@ export const UserDetailsModal = ({
               onClose();
               onResetPassword(user);
             }}
-            className="font-bold text-amber-700 hover:text-amber-900 dark:text-amber-400 hover:underline ml-2 whitespace-nowrap"
+            className="font-bold text-amber-700 hover:text-amber-900 hover:underline ml-2 whitespace-nowrap"
           >
             Reset Password
           </button>

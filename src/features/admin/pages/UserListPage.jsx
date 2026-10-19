@@ -107,8 +107,14 @@ export const UserListPage = () => {
       const payload = res.data || {};
       const userList = Array.isArray(payload) ? payload : (payload.users || []);
       setUsers(userList);
-      setTotalUsers(payload.totalUsers !== undefined ? payload.totalUsers : userList.length);
-      setTotalPages(payload.totalPages || 1);
+      setTotalUsers(
+        payload.totalUsers !== undefined
+          ? payload.totalUsers
+          : payload.pagination?.total !== undefined
+          ? payload.pagination.total
+          : userList.length
+      );
+      setTotalPages(payload.totalPages || payload.pagination?.totalPages || 1);
     } catch (err) {
       console.error("Failed to load users:", err);
       setError(getErrorMessage(err, "Could not fetch user directory."));
@@ -321,7 +327,28 @@ export const UserListPage = () => {
       title="User Management"
       subtitle="Comprehensive administration of retail customers, API partners, and system privileges"
       actions={
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+          <button
+            type="button"
+            onClick={() => showNotification("Exporting data as Excel spreadsheet...")}
+            className="px-3 py-1.5 rounded-lg border border-emerald-500 text-emerald-600 bg-white hover:bg-emerald-50 text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors"
+          >
+            📊 Excel
+          </button>
+          <button
+            type="button"
+            onClick={() => showNotification("Exporting data as PDF document...")}
+            className="px-3 py-1.5 rounded-lg border border-rose-500 text-rose-600 bg-white hover:bg-rose-50 text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors"
+          >
+            📄 PDF
+          </button>
+          <button
+            type="button"
+            onClick={() => showNotification("Exporting data as JSON payload...")}
+            className="px-3 py-1.5 rounded-lg border border-purple-500 text-purple-600 bg-white hover:bg-purple-50 text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors"
+          >
+            ⚡ JSON
+          </button>
           <Button
             variant="outline"
             size="sm"

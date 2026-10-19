@@ -59,16 +59,16 @@ export const FeaturePlaceholderPage = ({
           </>
         )}
         <ChevronRight className="w-3 h-3 text-slate-400" />
-        <span className="font-semibold text-slate-800 dark:text-slate-200">
+        <span className="font-semibold text-slate-800">
           {displayTitle}
         </span>
       </nav>
 
       {/* Main Feature Banner Card */}
-      <Card padding="lg" className="border-[#E2EEF5] dark:border-slate-800 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100 dark:border-slate-800">
+      <Card padding="lg" className="border-[#E2EEF5] shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
           <div className="flex items-start space-x-4">
-            <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950 text-brand-blue flex items-center justify-center flex-shrink-0 shadow-sm">
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 text-brand-blue flex items-center justify-center flex-shrink-0 shadow-sm">
               {CustomIcon ? (
                 <CustomIcon className="w-6 h-6" />
               ) : (
@@ -77,7 +77,7 @@ export const FeaturePlaceholderPage = ({
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h1 className="text-xl sm:text-2xl font-black text-brand-navy dark:text-white tracking-tight">
+                <h1 className="text-xl sm:text-2xl font-black text-brand-navy tracking-tight">
                   {displayTitle}
                 </h1>
                 {badgeText && (
@@ -101,32 +101,32 @@ export const FeaturePlaceholderPage = ({
 
         {/* Phase Scope Card */}
         <div className="py-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 rounded-xl bg-[#F5FBFF] dark:bg-slate-800/60 border border-[#E2EEF5] dark:border-slate-700/60">
+          <div className="p-4 rounded-xl bg-[#F5FBFF] border border-[#E2EEF5]">
             <div className="flex items-center space-x-2 text-brand-blue text-xs font-bold mb-1">
               <Clock className="w-4 h-4" />
               <span>Project Roadmap</span>
             </div>
-            <p className="text-xs text-slate-600 dark:text-slate-300">
+            <p className="text-xs text-slate-600">
               Scheduled for <strong>{plannedPhase || "Upcoming Phase"}</strong>. All backend contracts and integration points are staged.
             </p>
           </div>
 
-          <div className="p-4 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/40">
-            <div className="flex items-center space-x-2 text-emerald-700 dark:text-emerald-300 text-xs font-bold mb-1">
+          <div className="p-4 rounded-xl bg-emerald-50/60 border border-emerald-100">
+            <div className="flex items-center space-x-2 text-emerald-700 text-xs font-bold mb-1">
               <ShieldCheck className="w-4 h-4" />
               <span>Role Permissions Verified</span>
             </div>
-            <p className="text-xs text-slate-600 dark:text-slate-300">
+            <p className="text-xs text-slate-600">
               Authenticated user: <strong>{user?.name || user?.mobile}</strong> possesses confirmed access permissions for this module.
             </p>
           </div>
 
-          <div className="p-4 rounded-xl bg-purple-50/60 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-900/40">
-            <div className="flex items-center space-x-2 text-purple-700 dark:text-purple-300 text-xs font-bold mb-1">
+          <div className="p-4 rounded-xl bg-purple-50/60 border border-purple-100">
+            <div className="flex items-center space-x-2 text-purple-700 text-xs font-bold mb-1">
               <Sparkles className="w-4 h-4" />
               <span>Architecture Notice</span>
             </div>
-            <p className="text-xs text-slate-600 dark:text-slate-300">
+            <p className="text-xs text-slate-600">
               {role === "USER"
                 ? "Direct payment gateway integration active. No personal wallet is required."
                 : role === "API_PARTNER"
@@ -137,7 +137,7 @@ export const FeaturePlaceholderPage = ({
         </div>
 
         {/* Navigation Action */}
-        <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
           <Link to={dashboardPath}>
             <Button
               variant="outline"
@@ -148,7 +148,7 @@ export const FeaturePlaceholderPage = ({
             </Button>
           </Link>
           <span className="text-[11px] text-slate-400">
-            Route: <code className="font-mono bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">{location.pathname}</code>
+            Route: <code className="font-mono bg-slate-100 px-1.5 py-0.5 rounded text-slate-700">{location.pathname}</code>
           </span>
         </div>
       </Card>
