@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { useSearchParams, useLocation } from "react-router-dom";
+import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
 import {
   Users,
   Search,
@@ -40,6 +40,7 @@ import { getErrorMessage } from "../../../utils/apiError";
  * toggle account status and reset passwords for platform users.
  */
 export const UserListPage = () => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const [users, setUsers] = useState([]);
@@ -330,10 +331,18 @@ export const UserListPage = () => {
           >
             <KeyRound className="w-4 h-4" />
           </button>
+          <button
+            type="button"
+            title="Assign Permissions"
+            onClick={() => navigate(`/admin/permissions/user/${row.id || row._id}`)}
+            className="p-1.5 rounded-lg text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
+          >
+            <ShieldCheck className="w-4 h-4" />
+          </button>
         </div>
       ),
     },
-  ], []);
+  ], [navigate]);
 
   const isLeads = location.pathname.includes("/admin/leads");
   const isActionRequests = location.pathname.includes("action-requests");

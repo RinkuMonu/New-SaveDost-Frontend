@@ -11,6 +11,7 @@ import {
   ServiceProvidersPage,
   ReportsPage,
   SystemSettingsPage,
+  PermissionManagementPage,
 } from "../../features/admin";
 import { ApiPartnerDashboardPlaceholder, PartnerWalletPage } from "../../features/api-partner";
 import { UserDashboardPage, UserProfilePage } from "../../features/user";
@@ -108,8 +109,11 @@ export const AppRouter = () => {
             <Route path="/admin/kyc/*" element={<UserListPage />} />
             <Route path="/admin/api-partners" element={<PartnerManagementPage />} />
             <Route path="/admin/api-partners/*" element={<PartnerManagementPage />} />
-            <Route path="/admin/permissions" element={<SystemSettingsPage />} />
-            <Route path="/admin/permissions/*" element={<SystemSettingsPage />} />
+            <Route path="/admin/permissions" element={<PermissionManagementPage />} />
+            <Route path="/admin/permissions/assign" element={<PermissionManagementPage />} />
+            <Route path="/admin/permissions/roles" element={<PermissionManagementPage />} />
+            <Route path="/admin/permissions/user/:userId" element={<PermissionManagementPage />} />
+            <Route path="/admin/permissions/*" element={<PermissionManagementPage />} />
             <Route path="/admin/services" element={<ServiceProvidersPage />} />
             <Route path="/admin/services/*" element={<ServiceProvidersPage />} />
             <Route path="/admin/transactions" element={<TransactionManagementPage />} />
